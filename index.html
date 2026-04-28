@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PICPE - Universidad CESMAG</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#C0392B;--red-l:#E8352A;--red-d:#8B1A12;--red-t:#FDECEA;
+  --blue:#1A5FA0;--blue-l:#2176C7;--blue-d:#0C3D6E;--blue-t:#E3EFF9;
+  --white:#FFFFFF;--text:#1C1C1C;--muted:#5C5C5C;--bg:#F5F5F5;
+  --border:#DDE3EC;--border-m:#BBC8D8;
+  --green:#1A7A4A;--green-t:#E6F5ED;
+  --amber:#A05A00;--amber-t:#FFF3E0;--radius:10px;
+}
+body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+h1,h2,h3{font-family:'Playfair Display',serif}
+.screen{display:none !important}.screen.active{display:block !important}
+.topbar{background:var(--blue-d);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:54px;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.topbar-brand{display:flex;align-items:center;gap:14px}
+.topbar-logo{width:32px;height:32px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--blue-d)}
+.topbar-title{color:#fff;font-weight:700;font-size:14px}
+.topbar-sub{color:rgba(255,255,255,.55);font-size:11px;margin-top:1px}
+.topbar-btn{background:none;border:1.5px solid rgba(255,255,255,.35);border-radius:6px;color:rgba(255,255,255,.8);font-size:12px;padding:6px 14px;cursor:pointer;transition:.15s;font-family:'Source Sans 3',sans-serif}
+.topbar-btn:hover{border-color:rgba(255,255,255,.7);color:#fff;background:rgba(255,255,255,.08)}
+.wrap{max-width:800px;margin:0 auto;padding:36px 18px}
+.wrap-wide{max-width:1200px;margin:0 auto;padding:24px 18px}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:28px 32px}
+.btn{border:none;border-radius:7px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;transition:.15s;font-family:'Source Sans 3',sans-serif}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:var(--red-l)}
+.btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:var(--blue-l)}
+.btn-ghost{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:4px 2px;font-family:'Source Sans 3',sans-serif}
+.btn-ghost:hover{color:var(--blue)}
+.btn:disabled{background:#C8C8C8 !important;cursor:not-allowed !important;color:#888 !important}
+.prog-wrap{background:#E0E6EF;border-radius:4px;height:4px;overflow:hidden;margin-bottom:30px}
+.prog-fill{height:100%;border-radius:4px;transition:width .45s ease;background:var(--blue)}
+.form-group{margin-bottom:18px}
+.form-label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
+.form-req{color:var(--red)}
+.form-input{width:100%;border:1.5px solid var(--border);border-radius:7px;padding:11px 14px;font-size:14px;font-family:'Source Sans 3',sans-serif;color:var(--text);transition:.15s;background:#fff}
+.form-input:focus{border-color:var(--blue);outline:none;box-shadow:0 0 0 3px rgba(26,95,160,.1)}
+.sec-hdr{border-radius:var(--radius) var(--radius) 0 0;padding:18px 26px;color:#fff}
+.sec-instr{padding:11px 26px;font-size:13px;font-style:italic;border-left:4px solid transparent}
+.sec-body{border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:26px}
+.q-block{margin-bottom:26px;padding-bottom:26px;border-bottom:1px solid #F0F0F0}
+.q-block:last-child{border-bottom:none;padding-bottom:0;margin-bottom:0}
+.q-text{font-size:14px;line-height:1.75;margin-bottom:13px;color:var(--text)}
+.q-num{font-weight:700}
+.inv-tag{font-size:10px;background:var(--amber-t);color:var(--amber);border-radius:3px;padding:2px 7px;margin-left:8px;font-style:normal;font-weight:600}
+.likert-row{display:flex;gap:7px;flex-wrap:wrap}
+.lbtn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 13px;border-radius:7px;border:1.5px solid var(--border);background:#fff;min-width:66px;cursor:pointer;transition:.15s}
+.lbtn:hover{border-color:var(--blue-l);background:var(--blue-t)}
+.lbtn-num{font-size:17px;font-weight:700;font-family:'Playfair Display',serif}
+.lbtn-lbl{font-size:9px;text-align:center;line-height:1.2;font-weight:500;opacity:.85}
+.mcq-opts{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.mbtn{display:flex;align-items:flex-start;gap:11px;padding:11px 14px;border-radius:7px;border:1.5px solid var(--border);background:#FAFBFC;text-align:left;cursor:pointer;transition:.15s;width:100%}
+.mbtn:hover{border-color:var(--blue-l);background:var(--blue-t)}
+.mbtn-letter{min-width:24px;height:24px;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:.15s}
+.mbtn-text{font-size:13px;color:var(--text);line-height:1.55}
+.nav-row{display:flex;gap:10px;margin-top:22px}
+.nav-back{background:#fff;color:var(--text);border:1.5px solid var(--border);border-radius:7px;padding:11px 18px;font-size:13px;font-family:'Source Sans 3',sans-serif;cursor:pointer}
+.nav-fwd{flex:1;border-radius:7px;padding:11px;font-size:14px;font-family:'Source Sans 3',sans-serif;font-weight:600;color:#fff;border:none;cursor:pointer;transition:.15s}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px}
+.stat-val{font-size:26px;font-weight:700;margin-bottom:4px;font-family:'Playfair Display',serif}
+.stat-lbl{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.rtbl{width:100%;border-collapse:collapse;font-size:13px}
+.rtbl th{background:var(--blue-d);color:#fff;padding:10px 12px;font-size:11px;font-weight:600;white-space:nowrap;letter-spacing:.4px;text-align:left}
+.rtbl th.c{text-align:center}
+.rtbl td{padding:10px 11px;border-bottom:1px solid #EDF0F5}
+.rtbl td.c{text-align:center}
+.rtbl tbody tr{cursor:pointer;transition:background .12s}
+.rtbl tbody tr:hover td{background:var(--blue-t)}
+.badge{font-size:10px;font-weight:600;padding:3px 9px;border-radius:10px;white-space:nowrap;display:inline-block}
+.bar-wrap{margin-bottom:13px}
+.bar-meta{display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px;font-weight:600}
+.bar-track{background:#EAECF0;border-radius:4px;height:8px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .7s ease}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:flex;align-items:flex-start;justify-content:center;padding:24px 12px;overflow-y:auto}
+.modal-box{background:#fff;border-radius:14px;width:100%;max-width:720px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);margin:auto}
+.modal-hdr{background:var(--blue-d);color:#fff;padding:18px 24px;display:flex;align-items:center;justify-content:space-between}
+.modal-body{padding:24px;max-height:72vh;overflow-y:auto}
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 54px);padding:20px}
+.login-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:36px 40px;width:100%;max-width:400px;box-shadow:0 8px 32px rgba(26,95,160,.08)}
+.hero-strip{background:linear-gradient(135deg,#0C3D6E 0%,#1A5FA0 60%,#1e6bbf 100%);padding:48px 24px 40px;text-align:center;color:#fff;position:relative;overflow:hidden}
+.hero-picpe{font-size:52px;font-weight:700;letter-spacing:-1px;line-height:1;margin-bottom:8px;font-family:'Playfair Display',serif}
+.hero-sub{font-size:16px;opacity:.85;font-style:italic;margin-bottom:6px}
+.hero-meta{font-size:12px;opacity:.6;letter-spacing:.5px}
+.confirm-icon{width:68px;height:68px;background:var(--green-t);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:30px;color:var(--green)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.tab-row{display:flex;gap:0;margin-bottom:22px;border-bottom:2px solid var(--blue-t)}
+.tab-btn{background:none;border:none;padding:10px 20px;font-size:14px;font-family:'Source Sans 3',sans-serif;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:.15s}
+.tab-btn.active{color:var(--blue-d);border-bottom-color:var(--blue-d)}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.periodo-tag{background:var(--blue-t);color:var(--blue-d);font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;font-family:'Source Sans 3',sans-serif}
+.chart-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.chart-bar-label{font-size:11px;color:var(--text);min-width:120px;font-weight:500}
+.chart-bar-outer{flex:1;background:#EAECF0;border-radius:4px;height:22px;overflow:hidden}
+.chart-bar-inner{height:100%;border-radius:4px;transition:width .8s ease;display:flex;align-items:center;padding-left:8px}
+.chart-bar-val{font-size:11px;font-weight:700;color:#fff;white-space:nowrap}
+.chart-bar-pct{font-size:11px;color:var(--muted);min-width:38px;text-align:right}
+.dist-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px}
+.dist-item{background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px 10px;text-align:center;border-top:4px solid var(--border)}
+.fb-acc{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:8px}
+.fb-acc-hdr{background:#FAFBFC;padding:12px 16px;font-size:13px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.fb-acc-hdr:hover{background:var(--blue-t)}
+.fb-acc-body{padding:14px 16px;font-size:13px;line-height:1.7;color:var(--muted);border-top:1px solid var(--border);display:none}
+.fb-acc-body.open{display:block}
+.dash-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--blue-d);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--blue-t);font-family:'Source Sans 3',sans-serif}
+@media(max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr 1fr}.wrap,.wrap-wide{padding:16px 12px}.card,.login-card{padding:20px 16px}.hero-picpe{font-size:38px}.sec-body{padding:16px}.dist-grid{grid-template-columns:repeat(3,1fr)}}
+</style>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-logo">UC</div>
+    <div>
+      <div class="topbar-title">PICPE - Universidad CESMAG</div>
+      <div class="topbar-sub">Practica Empresarial Externa</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span id="fb-status-badge" style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:10px;background:#E3EFF9;color:#1A5FA0;border:1px solid #b3cfe8">&#9679; Verificando nube...</span>
+    <button class="topbar-btn" id="btn-docente" onclick="openDocente()">Acceso docente</button>
+  </div>
+</div>
+<div id="sc-home" class="screen active">
+  <div class="hero-strip">
+    <div class="hero-picpe">PICPE</div>
+    <div class="hero-sub">Prueba Integral de Competencias para Practicantes Empresariales</div>
+    <div class="hero-meta">ADMINISTRACION DE EMPRESAS - VERSION 1.0</div>
+  </div>
+  <div class="wrap">
+    <div class="card" style="margin-bottom:18px">
+      <h2 style="font-size:15px;color:var(--blue-d);margin-bottom:12px;text-transform:uppercase;letter-spacing:.8px;font-family:'Source Sans 3',sans-serif;font-weight:700">Acerca de esta evaluacion</h2>
+      <p style="font-size:14px;line-height:1.8;color:var(--muted);margin-bottom:20px">Esta prueba evalua el potencial de desempeno de estudiantes que van a iniciar su Practica Empresarial Externa. No mide conocimientos memorizados: mide como piensa, decide y se comporta frente a situaciones laborales reales.</p>
+      <div class="g3">
+        <div class="stat-card"><div class="stat-val" style="color:var(--blue)">60</div><div class="stat-lbl">Preguntas - 5 secciones</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--red)">90 min</div><div class="stat-lbl">Tiempo sugerido</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--green)">100 pts</div><div class="stat-lbl">Puntaje total</div></div>
+      </div>
+    </div>
+    <div style="background:var(--blue-t);border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:22px;font-size:13px;color:var(--blue-d);line-height:1.7">
+      <strong>Instrucciones:</strong> Responda con honestidad. No use dispositivos externos. No deje preguntas sin responder. En la Seccion 1, marque del 1 al 5 segun la frecuencia del comportamiento. En las demas, seleccione la unica opcion correcta.
+    </div>
+    <button class="btn btn-red" style="width:100%;font-size:15px;padding:14px" onclick="startTest()">Iniciar Prueba</button>
+    <p style="text-align:center;font-size:11px;color:#bbb;margin-top:14px">Coordinador PEE: Mg. Fabian Alexander Campo Insuasty - facampo@unicesmag.edu.co</p>
+  </div>
+</div>
+<div id="sc-test" class="screen">
+  <div class="wrap">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <button class="btn-ghost" onclick="goHome()">Inicio</button>
+      <span id="step-lbl" style="font-size:12px;color:var(--muted);font-weight:600"></span>
+    </div>
+    <div class="prog-wrap"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    <div id="test-body"></div>
+  </div>
+</div>
+<div id="sc-confirm" class="screen">
+  <div class="wrap" style="text-align:center;padding-top:48px">
+    <div class="confirm-icon">&#10003;</div>
+    <h2 style="font-size:24px;color:var(--green);margin-bottom:10px">Prueba enviada correctamente</h2>
+    <p id="confirm-name" style="font-size:15px;color:var(--muted);margin-bottom:8px"></p>
+    <p style="font-size:13px;color:var(--muted);max-width:440px;margin:0 auto 28px;line-height:1.7">Tu evaluacion fue registrada. El coordinador de practica revisara los resultados y te enviara una retroalimentacion detallada a tu correo institucional en los proximos dias.</p>
+    <div style="background:var(--blue-t);border:1px solid var(--border-m);border-radius:8px;padding:16px 24px;max-width:460px;margin:0 auto 28px;text-align:left;font-size:13px;color:var(--blue-d);line-height:1.7">
+      <strong>Que sigue?</strong><br>El coordinador analizara tu desempeno en cada seccion y te compartira por correo una retroalimentacion personalizada con tus fortalezas, areas de mejora y recomendaciones para tu practica empresarial.
+    </div>
+    <button class="btn btn-blue" onclick="goHome()">Volver al inicio</button>
+  </div>
+</div>
+<div id="sc-login" class="screen">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div style="text-align:center;margin-bottom:26px">
+        <div style="width:52px;height:52px;background:var(--blue-d);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff">UC</div>
+        <h2 style="font-size:20px;color:var(--blue-d);margin-bottom:4px">Acceso docente</h2>
+        <p style="font-size:13px;color:var(--muted)">Panel de resultados PICPE</p>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contrasena de coordinador</label>
+        <input class="form-input" type="password" id="pwd-input" placeholder="Ingrese la contrasena" onkeydown="if(event.key==='Enter')doLogin()"/>
+        <div id="pwd-err" style="color:var(--red);font-size:12px;margin-top:6px;display:none">Contrasena incorrecta.</div>
+      </div>
+      <button class="btn btn-blue" style="width:100%" onclick="doLogin()">Ingresar al panel</button>
+      <button class="btn-ghost" style="width:100%;margin-top:10px;text-align:center" onclick="goHome()">Volver al inicio</button>
+    </div>
+  </div>
+</div>
+<div id="sc-results" class="screen">
+  <div class="wrap-wide">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px">
+      <div>
+        <button class="btn-ghost" onclick="goHome()" style="margin-bottom:4px">Cerrar sesion</button>
+        <h1 style="font-size:22px;color:var(--blue-d)">Panel de Resultados PICPE</h1>
+        <p style="font-size:12px;color:var(--muted)">Uso exclusivo del coordinador - Universidad CESMAG</p>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <select id="periodo-filter" style="border:1.5px solid var(--border);border-radius:7px;padding:8px 12px;font-size:13px;font-family:'Source Sans 3',sans-serif;background:#fff" onchange="renderResults()">
+          <option value="">Todos los periodos</option>
+          <option>2026-1</option><option>2026-2</option>
+          <option>2027-1</option><option>2027-2</option>
+          <option>2028-1</option><option>2028-2</option>
+        </select>
+        <button class="btn btn-blue" style="font-size:12px;padding:9px 16px" onclick="exportCSV()">Exportar CSV</button>
+        <button style="background:#fff;color:var(--red);border:1.5px solid var(--red);border-radius:7px;padding:9px 14px;font-size:12px;cursor:pointer;font-family:'Source Sans 3',sans-serif" onclick="clearData()">Limpiar datos</button>
+      </div>
+    </div>
+    <div class="tab-row">
+      <button class="tab-btn active" id="tab-dash-btn" onclick="switchTab('dash')">Dashboard</button>
+      <button class="tab-btn" id="tab-table-btn" onclick="switchTab('table')">Tabla de resultados</button>
+    </div>
+    <div id="tab-dash" class="tab-panel active"><div id="dash-content"></div></div>
+    <div id="tab-table" class="tab-panel">
+      <div class="g4" id="stats-grid" style="margin-bottom:22px"></div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+        <input id="srch" class="form-input" style="flex:1;min-width:200px;padding:8px 14px;font-size:13px;border-radius:7px" placeholder="Buscar por nombre, codigo o correo..." oninput="renderTable()"/>
+        <select id="sort-sel" style="border:1.5px solid var(--border);border-radius:7px;padding:8px 12px;font-size:13px;font-family:'Source Sans 3',sans-serif;background:#fff" onchange="renderTable()">
+          <option value="total">Ordenar: Puntaje total</option>
+          <option value="s4">Ordenar: S4 Juicio</option>
+          <option value="nombre">Ordenar: Nombre</option>
+        </select>
+        <button id="dir-btn" style="border:1.5px solid var(--border);border-radius:7px;padding:8px 14px;font-size:13px;font-family:'Source Sans 3',sans-serif;background:#fff;cursor:pointer" onclick="toggleDir()">Descendente</button>
+      </div>
+      <div id="results-wrap"></div>
+    </div>
+  </div>
+</div>
+<div id="sc-detail" class="screen">
+  <div class="wrap" style="padding-top:28px">
+    <button class="btn-ghost" onclick="showScreen('sc-results');renderResults()" style="margin-bottom:18px">Volver al panel</button>
+    <div id="detail-body"></div>
+  </div>
+</div>
+<div id="email-modal" style="display:none" class="modal-overlay" onclick="if(event.target===this)closeEmailModal()">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <span style="font-size:15px;font-weight:700;font-family:'Playfair Display',serif">Correo de retroalimentacion</span>
+      <button onclick="closeEmailModal()" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:5px;padding:5px 10px;cursor:pointer;font-size:13px">Cerrar</button>
+    </div>
+    <div class="modal-body">
+      <div id="email-preview-content"></div>
+      <div style="margin-top:16px;padding:14px;background:var(--blue-t);border-radius:8px;font-size:12px;color:var(--blue-d);line-height:1.6">
+        Haga clic en <strong>Copiar correo</strong>, luego peguelo en Outlook o Gmail. El formato se conserva.
+      </div>
+      <div style="display:flex;gap:8px;margin-top:14px">
+        <button class="btn btn-blue" style="flex:1" onclick="copyEmail()">Copiar correo</button>
+        <button class="btn" style="background:var(--bg);color:var(--text);border:1.5px solid var(--border)" onclick="closeEmailModal()">Cerrar</button>
+      </div>
+      <div id="copy-ok" style="display:none;text-align:center;color:var(--green);font-size:13px;margin-top:8px;font-weight:600">Copiado al portapapeles</div>
+    </div>
+  </div>
+</div>
+<script>
+
+const SK='picpe_v4_2026';
+
+// ═══════════════════════════════════════════════════════════════════════════
+// FIREBASE CONFIG — Reemplaza con los valores de TU proyecto Firebase
+// Instrucciones: console.firebase.google.com → tu proyecto →
+// Configuracion del proyecto → Tus apps → icono </> → Config
+// ═══════════════════════════════════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey:            "// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBA3GbZaX8qftvsykde7pHXqKDjG2KCD0Q",
+  authDomain: "unicesmag-picpe.firebaseapp.com",
+  databaseURL: "https://unicesmag-picpe-default-rtdb.firebaseio.com",
+  projectId: "unicesmag-picpe",
+  storageBucket: "unicesmag-picpe.firebasestorage.app",
+  messagingSenderId: "153701366759",
+  appId: "1:153701366759:web:49470143b046d71cbedb42",
+  measurementId: "G-7GBN7GH4TW"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);",
+  authDomain:        "// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBA3GbZaX8qftvsykde7pHXqKDjG2KCD0Q",
+  authDomain: "unicesmag-picpe.firebaseapp.com",
+  databaseURL: "https://unicesmag-picpe-default-rtdb.firebaseio.com",
+  projectId: "unicesmag-picpe",
+  storageBucket: "unicesmag-picpe.firebasestorage.app",
+  messagingSenderId: "153701366759",
+  appId: "1:153701366759:web:49470143b046d71cbedb42",
+  measurementId: "G-7GBN7GH4TW"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);",
+  databaseURL:       "// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBA3GbZaX8qftvsykde7pHXqKDjG2KCD0Q",
+  authDomain: "unicesmag-picpe.firebaseapp.com",
+  databaseURL: "https://unicesmag-picpe-default-rtdb.firebaseio.com",
+  projectId: "unicesmag-picpe",
+  storageBucket: "unicesmag-picpe.firebasestorage.app",
+  messagingSenderId: "153701366759",
+  appId: "1:153701366759:web:49470143b046d71cbedb42",
+  measurementId: "G-7GBN7GH4TW"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);",
+  projectId:         "// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBA3GbZaX8qftvsykde7pHXqKDjG2KCD0Q",
+  authDomain: "unicesmag-picpe.firebaseapp.com",
+  databaseURL: "https://unicesmag-picpe-default-rtdb.firebaseio.com",
+  projectId: "unicesmag-picpe",
+  storageBucket: "unicesmag-picpe.firebasestorage.app",
+  messagingSenderId: "153701366759",
+  appId: "1:153701366759:web:49470143b046d71cbedb42",
+  measurementId: "G-7GBN7GH4TW"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);",
+  storageBucket:     "// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBA3GbZaX8qftvsykde7pHXqKDjG2KCD0Q",
+  authDomain: "unicesmag-picpe.firebaseapp.com",
+  databaseURL: "https://unicesmag-picpe-default-rtdb.firebaseio.com",
+  projectId: "unicesmag-picpe",
+  storageBucket: "unicesmag-picpe.firebasestorage.app",
+  messagingSenderId: "153701366759",
+  appId: "1:153701366759:web:49470143b046d71cbedb42",
+  measurementId: "G-7GBN7GH4TW"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);",
+  messagingSenderId: "// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBA3GbZaX8qftvsykde7pHXqKDjG2KCD0Q",
+  authDomain: "unicesmag-picpe.firebaseapp.com",
+  databaseURL: "https://unicesmag-picpe-default-rtdb.firebaseio.com",
+  projectId: "unicesmag-picpe",
+  storageBucket: "unicesmag-picpe.firebasestorage.app",
+  messagingSenderId: "153701366759",
+  appId: "1:153701366759:web:49470143b046d71cbedb42",
+  measurementId: "G-7GBN7GH4TW"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);",
+  appId:             "// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBA3GbZaX8qftvsykde7pHXqKDjG2KCD0Q",
+  authDomain: "unicesmag-picpe.firebaseapp.com",
+  databaseURL: "https://unicesmag-picpe-default-rtdb.firebaseio.com",
+  projectId: "unicesmag-picpe",
+  storageBucket: "unicesmag-picpe.firebasestorage.app",
+  messagingSenderId: "153701366759",
+  appId: "1:153701366759:web:49470143b046d71cbedb42",
+  measurementId: "G-7GBN7GH4TW"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);"
+};
+
+// ── Firebase init (no crashea si aun no esta configurado) ─────────────────
+var db = null;
+var fbReady = false;
+try {
+  if (!firebaseConfig.apiKey.includes('PEGA_AQUI')) {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+    fbReady = true;
+  }
+} catch(e) { console.warn('Firebase no configurado:', e); }
+
+// ── Guarda un registro en Firebase Realtime Database ─────────────────────
+function fbSave(record) {
+  if (!fbReady || !db) return;
+  // Usamos el id del registro como clave para evitar duplicados
+  db.ref('picpe/' + record.id).set(record)
+    .catch(function(e){ console.warn('Firebase save error:', e); });
+}
+
+// ── Lee todos los registros de Firebase (async, con callback) ─────────────
+function fbGetAll(callback) {
+  if (!fbReady || !db) { callback(null); return; }
+  db.ref('picpe').get().then(function(snap) {
+    if (snap.exists()) {
+      var records = Object.values(snap.val());
+      callback(records);
+    } else {
+      callback([]);
+    }
+  }).catch(function(e) {
+    console.warn('Firebase read error:', e);
+    callback(null);
+  });
+}
+
+// ── Elimina todos los registros de Firebase (equivale a clearData) ────────
+function fbClearAll(callback) {
+  if (!fbReady || !db) { callback && callback(); return; }
+  db.ref('picpe').remove()
+    .then(function(){ callback && callback(); })
+    .catch(function(e){ console.warn('Firebase clear error:', e); callback && callback(); });
+}
+
+// ── Estado de Firebase en pantalla ────────────────────────────────────────
+function updateFbStatus() {
+  var el = document.getElementById('fb-status-badge');
+  if (!el) return;
+  if (fbReady) {
+    el.textContent = '● Nube activa';
+    el.style.color = '#1A7A4A';
+    el.style.background = '#E6F5ED';
+    el.style.border = '1px solid #a3d9b8';
+  } else {
+    el.textContent = '● Solo local';
+    el.style.color = '#A05A00';
+    el.style.background = '#FFF3E0';
+    el.style.border = '1px solid #f0c080';
+  }
+}
+const SCALE=['Nunca','Pocas veces','A veces','Frecuentemente','Siempre'];
+const LTR=['A','B','C','D'];
+const SCOL=['#1A5FA0','#2176C7','#1A7A4A','#A05A00','#7B2D8B'];
+const SLIT=['#E3EFF9','#EBF4FF','#E6F5ED','#FFF3E0','#F5E6FF'];
+const PERIODOS=['2026-1','2026-2','2027-1','2027-2','2028-1','2028-2'];
+
+const FB={
+  s1:{
+    alto:'Tu perfil de comportamiento laboral es solido. Demuestras iniciativa, responsabilidad y disposicion para el trabajo en equipo.',
+    medio:'Tu comportamiento laboral muestra bases adecuadas, aunque hay oportunidades de fortalecer aspectos como la iniciativa ante situaciones inciertas y la gestion de la confidencialidad.',
+    bajo:'Se identifican brechas importantes en tu autopercepcion laboral. Se recomienda trabajar con consciencia en habitos de responsabilidad, comunicacion asertiva y etica profesional.'
+  },
+  s2:{
+    alto:'Tu capacidad de razonamiento abstracto es alta. Puedes identificar patrones, establecer analogias y resolver problemas numericos con agilidad.',
+    medio:'Tu razonamiento abstracto es funcional. Puedes afinarlo practicando ejercicios de series y analogias regularmente.',
+    bajo:'El razonamiento abstracto requiere atencion. Se recomienda practicar series numericas, analogias verbales y problemas de logica.'
+  },
+  s3:{
+    alto:'Tu agilidad cognitiva y comprension verbal son destacadas. Puedes leer con sentido critico, calcular con precision y comunicarte de forma profesional.',
+    medio:'Tu comprension y agilidad cognitiva son adecuadas. Refuerza la lectura de textos empresariales y la redaccion de comunicaciones formales.',
+    bajo:'Se detectan dificultades en comprension verbal y calculo aplicado. Fortalece la lectura critica de documentos empresariales.'
+  },
+  s4:{
+    alto:'Tu juicio situacional es excelente. Frente a dilemas eticos y laborales reales, tomas decisiones equilibradas que combinan integridad y criterio profesional.',
+    medio:'Tu juicio situacional es razonable. Practica la comunicacion asertiva y consulta con tu tutor antes de decisiones de alto impacto.',
+    bajo:'El juicio situacional presenta brechas. Trabaja en: manejo de la confidencialidad, comunicacion asertiva con jefes y colegas, y reconocimiento oportuno de errores.'
+  },
+  s5:{
+    alto:'Tus conocimientos tecnicos en administracion de empresas son solidos. Dominas conceptos de gestion, indicadores y herramientas de mejora continua.',
+    medio:'Tus conocimientos tecnicos son suficientes. Repasa los temas con dificultad, especialmente indicadores de gestion y ciclo PHVA.',
+    bajo:'Se detectan vacios conceptuales relevantes. Refuerza: indicadores KPI, gestion por procesos, PHVA y estados financieros basicos.'
+  }
+};
+
+function getFBLevel(v,m){const p=v/m;return p>=0.75?'alto':p>=0.5?'medio':'bajo';}
+
+const SECS=[
+  {id:1,code:'S1',title:'Comportamiento Laboral y Autopercepcin',time:'12 min',pts:15,type:'likert',
+   instr:'Marque del 1 al 5 que tan frecuente es ese comportamiento en usted.',
+   qs:['Cuando recibo una tarea nueva sin instrucciones claras, busco informacion por mi cuenta antes de preguntar.',
+       'Cumplo los compromisos que adquiero, aunque eso implique trabajar mas tiempo del habitual.',
+       'Me incomoda cometer errores frente a otras personas; prefiero hacer las cosas en solitario cuando no estoy seguro/a. [INVERTIDA]',
+       'En situaciones de conflicto con un companero o jefe, expreso mi punto de vista con calma y escucho la otra postura.',
+       'Identifico oportunidades de mejora en los procesos que me asignan, aunque nadie me lo pida.',
+       'Cuando hay cambios inesperados en mis responsabilidades, me adapto sin que eso afecte mi rendimiento.',
+       'Antes de enviar un informe o correo importante, reviso ortografia, coherencia y tono.',
+       'Me siento comodo/a liderando una actividad o proyecto cuando el equipo lo necesita.',
+       'Mantengo la confidencialidad de la informacion a la que tengo acceso, incluso cuando seria util comentarla.',
+       'Cuando cometo un error, lo reconozco de inmediato y propongo como corregirlo.']},
+  {id:2,code:'S2',title:'Razonamiento Abstracto',time:'15 min',pts:20,type:'mcq',
+   instr:'Seleccione la opcion (A, B, C o D) que completa o continua la serie de manera logica.',
+   qs:[
+    {q:'Serie numerica: 2, 6, 18, 54, ___',opts:['108','162','216','144'],ans:1,fb:'La razon es x3. 54x3=162.'},
+    {q:'Serie de figuras: triangulo - cuadrado - pentagono - hexagono - ___',opts:['Hexagono','Heptagono','Octagono','Circulo'],ans:1,fb:'Cada figura agrega un lado. El siguiente es heptagono (7 lados).'},
+    {q:'Elemento que NO pertenece: Planear, Organizar, Ejecutar, Controlar, Vender.',opts:['Planear','Organizar','Vender','Controlar'],ans:2,fb:'Planear, Organizar, Ejecutar y Controlar son las cuatro funciones del proceso administrativo. Vender es funcion comercial.'},
+    {q:'VENTAS es a INGRESOS como COSTOS es a ___',opts:['Ganancias','Egresos','Presupuesto','Inventario'],ans:1,fb:'Las ventas generan ingresos; los costos generan egresos.'},
+    {q:'Serie de letras: B, E, H, K, ___',opts:['M','N','L','O'],ans:1,fb:'Patron: +3 posiciones en el alfabeto.'},
+    {q:'4 departamentos x 3 coordinadores x 5 asistentes = total de asistentes?',opts:['40','50','60','80'],ans:2,fb:'4x3x5=60.'},
+    {q:'Todos los lideres son empleados y algunos empleados son practicantes. Que es necesariamente cierto?',opts:['Todos los practicantes son lideres','Algunos lideres pueden ser practicantes','Ningun practicante es empleado','Todos los empleados son lideres'],ans:1,fb:'Por transitividad logica: es posible que algunos lideres sean practicantes, pero no necesariamente todos.'},
+    {q:'Cuadro 3x3 donde filas, columnas y diagonal suman 15. Centro = 5. Que ilustra?',opts:['Distribucion de Poisson','Cuadrado magico','Progresion geometrica','Matriz de covarianza'],ans:1,fb:'Un cuadrado magico: todas las sumas dan el mismo resultado.'},
+    {q:'$1.200.000 en enero, crece 10% mensual. Cuanto en marzo?',opts:['$1.320.000','$1.440.000','$1.452.000','$1.464.000'],ans:2,fb:'Enero: $1.200.000 - Febrero: x1.10=$1.320.000 - Marzo: x1.10=$1.452.000.'},
+    {q:'Estrategia es a empresa como _____ es a individuo.',opts:['Meta','Plan de vida','Habito','Habilidad'],ans:1,fb:'La estrategia define el rumbo de la empresa; el plan de vida cumple la misma funcion para el individuo.'}
+   ]},
+  {id:3,code:'S3',title:'Agilidad Cognitiva y Comprension',time:'18 min',pts:20,type:'mcq',
+   instr:'Lea atentamente y seleccione la respuesta correcta (A, B, C o D).',
+   qs:[
+    {q:'80 paginas en 2 dias de 6 horas utiles. Paginas por hora?',opts:['5 pag/h','6.67 pag/h','8 pag/h','10 pag/h'],ans:1,fb:'80 dividido 12 horas = 6.67 paginas por hora.'},
+    {q:'La productividad no depende solo del talento; la coordinacion y comunicacion determinan los resultados. Idea principal:',opts:['El talento no sirve','Los resultados dependen mas de coordinacion y comunicacion que del talento','La claridad de roles es el unico factor','Un equipo productivo no necesita talento'],ans:1,fb:'La idea central es que los factores relacionales pesan mas que el talento individual.'},
+    {q:'Sinonimo de eficiente en contexto organizacional:',opts:['Eficaz','Optimo','Productivo','Rapido'],ans:2,fb:'Eficiente = obtener resultados con el menor uso posible de recursos, equivalente a productivo.'},
+    {q:'Proyecto de $4.500.000. El 60% esta aprobado. Cuanto falta?',opts:['$1.500.000','$1.800.000','$2.700.000','$2.000.000'],ans:1,fb:'$4.500.000 x 40% = $1.800.000.'},
+    {q:'Cual tiene significado diferente? Informe, Reporte, Memorando, Circular, Diagnostico.',opts:['Informe','Memorando','Diagnostico','Circular'],ans:2,fb:'Los demas son tipos de documentos de comunicacion organizacional. Diagnostico es un proceso de analisis.'},
+    {q:'Pedidos despachados el jueves (plazo: antes del viernes). Segun la premisa del gerente, conclusion:',opts:['Clientes satisfechos definitivamente','Clientes no satisfechos','Segun la premisa, clientes satisfechos','No se puede concluir nada'],ans:2,fb:'Si P implica Q y P se cumple, entonces Q. Razonamiento modus ponens.'},
+    {q:'Ventas: ene $8M, feb $10M, mar $9M, abr $12M. Promedio mensual:',opts:['$9.5M','$9.75M','$10M','$9.25M'],ans:1,fb:'Suma dividida 4 = $39M / 4 = $9.75M.'},
+    {q:'Error logico en: Competidor redujo precios y aumento ventas; entonces nosotros tambien:',opts:['No hay error','Generalizacion apresurada: otras variables pueden explicarlo','Confusion causa-efecto inverso','Error de calculo'],ans:1,fb:'Post hoc ergo propter hoc: asumir causalidad por correlacion.'},
+    {q:'Apertura mas adecuada para informar retraso de 2 dias:',opts:['Estimado cliente, lamentamos el retraso de dos dias.','Hola, el pedido se atraso.','Senor cliente: aviso del problema con su pedido.','Buenos dias. Le informamos que el pedido llegara el [fecha]. Le ofrecemos disculpas y atencion prioritaria.'],ans:3,fb:'La opcion D combina saludo formal, explicacion, disculpa y compromiso de solucion.'},
+    {q:'Secuencia correcta del proceso de comunicacion formal:',opts:['Receptor-Mensaje-Emisor-Canal','Emisor-Codificacion-Canal-Decodificacion-Receptor-Retroalimentacion','Canal-Emisor-Mensaje-Receptor','Mensaje-Emisor-Receptor-Canal'],ans:1,fb:'Modelo Shannon-Weaver: Emisor codifica, Canal transmite, Receptor decodifica, Retroalimentacion cierra el ciclo.'}
+   ]},
+  {id:4,code:'S4',title:'Juicio Situacional',time:'20 min',pts:25,type:'mcq',
+   instr:'Seleccione la accion MAS ADECUADA segun su criterio profesional y etico.',
+   qs:[
+    {q:'El tutor le asigna una tarea que no corresponde a su perfil formativo. Que hace?',opts:['La realiza sin comentar nada','Se niega a hacerla','La realiza y luego comunica con respeto su percepcion al tutor','Llama directamente al coordinador a quejarse'],ans:2,fb:'Equilibrar responsabilidad con comunicacion asertiva posterior es la respuesta madura.'},
+    {q:'Un companero altera cifras en un informe de ventas. Que hace?',opts:['No interviene','Le comenta que no esta bien y si persiste informa al jefe por el canal adecuado','Lo publica en el grupo de WhatsApp','Elabora informe y lo envia a gerencia sin comentar'],ans:1,fb:'La etica exige actuar siguiendo la escala correcta: primero hablar, luego escalar si persiste.'},
+    {q:'El jefe rechaza su idea sin argumentar en una reunion. Cual es su reaccion?',opts:['Acepta y luego solicita retroalimentacion al jefe','Insiste en la reunion hasta que el jefe explique','Abandona la idea definitivamente','Busca aliados para presionar al jefe'],ans:0,fb:'Respetar las decisiones en el momento y buscar retroalimentacion posterior es madurez profesional.'},
+    {q:'Informe vence el viernes. El jueves tiene la info pero el formato no quedo bien. Que hace?',opts:['Entrega el viernes con nota explicativa y propone version mejorada','Pide mas tiempo','Entrega cualquier cosa','No entrega y espera'],ans:0,fb:'Cumplir el plazo con transparencia y proponer solucion demuestra orientacion al resultado.'},
+    {q:'Cliente pide informacion confidencial diciendo que siempre se la han dado. Que hace?',opts:['Se la da porque parece conocer la empresa','Verifica con su jefe y responde pronto','Se la da pero pide discrecion','Dice que no sabe nada'],ans:1,fb:'La confidencialidad es innegociable. Ante la duda, escalar al responsable autorizado.'},
+    {q:'Dos tareas urgentes con el mismo plazo y el tutor no esta. Que hace?',opts:['Hace la mas facil primero','Evalua impacto y empieza por la mas critica mientras avanza en la otra','Espera al tutor aunque se venza el plazo','Entrega las dos incompletas'],ans:1,fb:'Priorizar por impacto es la base de la gestion del tiempo profesional.'},
+    {q:'Identifica un problema en el area de otro jefe. Lo incluye en su informe?',opts:['Lo omite','Si, con datos, respeto y propuesta de solucion','Habla directamente con ese jefe sin consultar','Lo menciona vagamente'],ans:1,fb:'Presentar un hallazgo con datos, tono constructivo y propuesta es la manera profesional.'},
+    {q:'Tercer mes: solo actividades repetitivas sin aprendizaje. Que hace?',opts:['Lo asume con resignacion','Habla con el tutor y propone actividades con mas aprendizaje','Presenta queja formal de inmediato','Deja de esforzarse'],ans:1,fb:'La iniciativa proactiva es altamente valorada. Expresar la necesidad con propuestas concretas no es queja.'},
+    {q:'Cometio un error que causo retraso a un cliente. El tutor no lo sabe. Que hace?',opts:['Espera a ver si alguien lo nota','Informa de inmediato al tutor y propone como remediar','Lo intenta corregir solo','Le echa la culpa al sistema'],ans:1,fb:'La integridad exige transparencia inmediata. Un error reconocido y corregido rapido genera confianza.'},
+    {q:'Companero pide que firme asistencia en capacitacion que no curso. Que hace?',opts:['Accede para no danar la relacion','Se niega con respeto y le sugiere que explique su situacion al responsable','Firma pero avisa que es primera y ultima vez','Lo reporta sin hablar primero'],ans:1,fb:'La complicidad en actos deshonestos compromete su propia integridad.'}
+   ]},
+  {id:5,code:'S5',title:'Conocimientos Tecnicos y Empresariales',time:'25 min',pts:20,type:'mcq',
+   instr:'Seleccione la opcion correcta (A, B, C o D).',
+   qs:[
+    {q:'Indicador que mide resultado vs. recursos utilizados:',opts:['Eficacia','Efectividad','Eficiencia','Productividad relativa'],ans:2,fb:'Eficiencia = resultado/recurso. Eficacia = logro del objetivo.'},
+    {q:'El Ciclo PHVA es una metodologia de:',opts:['Gestion financiera','Mejora continua de procesos','Diseno organizacional','Planeacion estrategica'],ans:1,fb:'PHVA (Ciclo de Deming) es la columna vertebral de los sistemas de gestion de calidad ISO 9001.'},
+    {q:'Un KPI se diferencia de una metrica en que:',opts:['Es mas facil de calcular','Esta vinculado a un objetivo estrategico','Solo aplica a empresas grandes','No requiere linea base'],ans:1,fb:'Toda metrica mide algo; un KPI mide algo estrategicamente relevante.'},
+    {q:'Herramienta que visualiza actividades de un proceso indicando responsable por tarea:',opts:['Diagrama de Pareto','Diagrama de flujo con carriles (swimlane)','Mapa estrategico','Arbol de problemas'],ans:1,fb:'El diagrama swimlane distribuye actividades por actor responsable.'},
+    {q:'En la DOFA, Fortalezas y Debilidades corresponden a factores:',opts:['Externos del entorno','Internos de la organizacion','Futuros e inciertos','Economicos y tecnologicos'],ans:1,fb:'F y D son factores internos controlables. O y A son externos.'},
+    {q:'Diferencia principal entre mision y vision:',opts:['Mision = futuro; Vision = presente','Mision = proposito actual; Vision = proyeccion futura','Son sinonimos','Vision = corto plazo; Mision = largo plazo'],ans:1,fb:'Mision responde para que existimos hoy; vision responde donde queremos estar en el futuro.'},
+    {q:'Estado financiero que muestra activos, pasivos y patrimonio en un momento dado:',opts:['Estado de resultados','Flujo de caja','Balance general','Presupuesto de inversiones'],ans:2,fb:'El Balance General muestra la fotografia financiera de la empresa en un instante.'},
+    {q:'Rentabilidad neta del 12% significa:',opts:['Por cada $100 en activos genera $12','Por cada $100 en ventas obtiene $12 de utilidad neta','Sus costos son el 12% de ingresos','El 12% de empleados son rentables'],ans:1,fb:'Rentabilidad neta = Utilidad neta / Ventas x 100.'},
+    {q:'La gestion por procesos busca principalmente:',opts:['Reducir empleados','Organizar el trabajo alrededor de actividades que generan valor para el cliente','Aumentar la jerarquia','Estandarizar salarios'],ans:1,fb:'La gestion por procesos rompe silos departamentales y organiza flujos de valor.'},
+    {q:'Cual NO forma parte de un manual de funciones?',opts:['Denominacion del cargo','Competencias requeridas','Estado de resultados del area','Dependencia jerarquica'],ans:2,fb:'El estado de resultados es un documento financiero, no parte del perfil de un cargo.'},
+    {q:'Los 5 porques se usan para:',opts:['Establecer objetivos SMART','Identificar la causa raiz de un problema','Estructurar una presentacion','Definir indicadores'],ans:1,fb:'La tecnica de los 5 porques llega a la causa raiz preguntando por que repetidamente.'},
+    {q:'El cronograma de Gantt sirve para:',opts:['Analizar la competencia','Planificar y hacer seguimiento a actividades de un proyecto','Elaborar el presupuesto','Evaluar el desempeno del personal'],ans:1,fb:'El Gantt muestra actividades en el tiempo, duraciones y dependencias.'},
+    {q:'La escucha activa en el servicio al cliente implica:',opts:['Esperar en silencio y dar respuesta memorizada','Prestar atencion plena, verificar comprension y parafrasear el mensaje','Hablar al mismo tiempo para agilizar','Tomar notas sin mirar al cliente'],ans:1,fb:'Escucha activa: contacto visual, parafrasis, preguntas de clarificacion.'},
+    {q:'Un indicador con linea base tiene:',opts:['Formula sin cambios en dos anos','Valor de referencia inicial para medir progreso','Aplica solo al sector publico','Mide solo resultados financieros'],ans:1,fb:'La linea base es el punto de partida. Sin ella no es posible saber si un indicador mejoro.'},
+    {q:'La estructura matricial se caracteriza por:',opts:['Una sola linea de mando vertical','Combinar estructura funcional y de proyectos con doble dependencia','Operar sin departamentos','Ser exclusiva de multinacionales'],ans:1,fb:'En la estructura matricial un colaborador reporta al jefe funcional y al gerente de proyecto.'},
+    {q:'La etapa Verificar del PHVA consiste en:',opts:['Definir los objetivos','Ejecutar las acciones planificadas','Medir los resultados y compararlos con lo esperado','Implementar las correcciones'],ans:2,fb:'Verificar = medir + comparar con la meta. Sin esto el ciclo de mejora continua queda incompleto.'},
+    {q:'Para ordenar 500 registros de clientes de mayor a menor ventas en Excel:',opts:['BUSCARV','Ordenar y filtrar','CONTAR.SI','CONCATENAR'],ans:1,fb:'Datos - Ordenar y filtrar permite reorganizar un conjunto por cualquier columna.'},
+    {q:'La tasa de conversion en marketing digital mide:',opts:['Velocidad de carga del sitio','Porcentaje de visitantes que realizan la accion deseada','Numero total de visitas','Costo por publicacion'],ans:1,fb:'Tasa de conversion = Acciones completadas / Visitantes totales x 100.'},
+    {q:'Finalidad principal de un acta de reunion:',opts:['Documentar temas, acuerdos y responsables','Reemplazar correos de seguimiento','Registrar asistencia para nomina','Evaluar el desempeno de participantes'],ans:0,fb:'El acta captura los acuerdos, los responsables y los plazos.'},
+    {q:'La descripcion del cargo difiere del perfil del cargo en que:',opts:['Descripcion = que se hace; Perfil = requisitos de quien lo hace','Descripcion = gerentes; Perfil = operativos','Son lo mismo','El perfil incluye objetivos financieros'],ans:0,fb:'La descripcion detalla tareas; el perfil establece requisitos de la persona.'}
+   ]}
+];
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+var step=0, info={nombre:'',codigo:'',correo:'',periodo:''}, answers={}, sortDir='desc', activeTab='dash';
+
+// ── SCORE ──────────────────────────────────────────────────────────────────
+function calcScore(ans){
+  var s1r=0;
+  for(var i=0;i<10;i++){var v=ans['s1_'+i]||0;s1r+=i===2?6-v:v;}
+  var s1=parseFloat(((s1r/50)*15).toFixed(2));
+  var s2c=0,s3c=0,s4c=0,s5c=0;
+  SECS[1].qs.forEach(function(q,i){if(ans['s2_'+i]===q.ans)s2c++;});
+  SECS[2].qs.forEach(function(q,i){if(ans['s3_'+i]===q.ans)s3c++;});
+  SECS[3].qs.forEach(function(q,i){if(ans['s4_'+i]===q.ans)s4c++;});
+  SECS[4].qs.forEach(function(q,i){if(ans['s5_'+i]===q.ans)s5c++;});
+  var s2=s2c*2,s3=s3c*2,s4=parseFloat((s4c*2.5).toFixed(2)),s5=s5c;
+  var total=parseFloat((s1+s2+s3+s4+s5).toFixed(2));
+  var rango,rb,rt;
+  if(total>=85){rango='Alto potencial';rb='#E6F5ED';rt='#1A7A4A';}
+  else if(total>=70){rango='Potencial adecuado';rb='#E3EFF9';rt='#1A5FA0';}
+  else if(total>=55){rango='En desarrollo';rb='#FFF3E0';rt='#A05A00';}
+  else if(total>=40){rango='Potencial bajo';rb='#FCE4D6';rt='#8B3A00';}
+  else{rango='Alerta critica';rb='#FDECEA';rt='#C0392B';}
+  var flag=total<40||s4<12.5||s5<8;
+  return{s1:s1,s2:s2,s3:s3,s4:s4,s5:s5,total:total,rango:rango,rb:rb,rt:rt,flag:flag};
+}
+
+// ── NAVIGATION ─────────────────────────────────────────────────────────────
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function goHome(){showScreen('sc-home');}
+
+function startTest(){
+  step=0;answers={};info={nombre:'',codigo:'',correo:'',periodo:''};
+  showScreen('sc-test');renderStep();
+}
+
+function openDocente(){
+  showScreen('sc-login');
+  var pi=document.getElementById('pwd-input');
+  if(pi)pi.value='';
+  var pe=document.getElementById('pwd-err');
+  if(pe)pe.style.display='none';
+}
+
+function doLogin(){
+  var pi=document.getElementById('pwd-input');
+  var pe=document.getElementById('pwd-err');
+  if(pi && pi.value==='cesmagadmin*'){
+    showScreen('sc-results');
+    renderResults();
+  } else {
+    if(pe)pe.style.display='block';
+  }
+}
+
+// ── TEST RENDER ────────────────────────────────────────────────────────────
+function renderStep(){
+  var pct=(step/(SECS.length+1))*100;
+  var pf=document.getElementById('prog-fill');
+  if(pf){pf.style.width=pct+'%';pf.style.background=step===0?'var(--blue)':SCOL[step-1];}
+  var sl=document.getElementById('step-lbl');
+  if(sl)sl.textContent=step===0?'Datos del evaluado':'Seccion '+step+' de 5';
+  var tb=document.getElementById('test-body');
+  if(tb)tb.innerHTML=step===0?renderInfoStep():renderSec(SECS[step-1]);
+  if(step===0)setTimeout(checkInfoBtn,50);
+  window.scrollTo(0,0);
+}
+
+function renderInfoStep(){
+  var pOpts='<option value="">-- Seleccione su periodo --</option>';
+  PERIODOS.forEach(function(p){pOpts+='<option value="'+p+'"'+(info.periodo===p?' selected':'')+'>'+p+'</option>';});
+  return '<div class="card">'
+    +'<h2 style="font-size:18px;color:var(--blue-d);margin-bottom:6px">Datos de identificacion</h2>'
+    +'<p style="font-size:13px;color:var(--muted);margin-bottom:24px">Complete todos los campos antes de iniciar la prueba.</p>'
+    +'<div class="form-group"><label class="form-label">Apellidos y nombres completos <span class="form-req">*</span></label>'
+    +'<input class="form-input" id="f-nom" type="text" placeholder="Ej: Garcia Lopez, Maria Fernanda" value="'+info.nombre+'" oninput="info.nombre=this.value;checkInfoBtn()"/></div>'
+    +'<div class="form-group"><label class="form-label">Codigo estudiantil <span class="form-req">*</span></label>'
+    +'<input class="form-input" id="f-cod" type="text" placeholder="Ej: AE20210001" value="'+info.codigo+'" oninput="info.codigo=this.value;checkInfoBtn()"/></div>'
+    +'<div class="form-group"><label class="form-label">Correo electronico institucional <span class="form-req">*</span></label>'
+    +'<input class="form-input" id="f-cor" type="email" placeholder="Ej: mfgarcia@unicesmag.edu.co" value="'+info.correo+'" oninput="info.correo=this.value;checkInfoBtn()"/></div>'
+    +'<div class="form-group"><label class="form-label">Periodo academico <span class="form-req">*</span></label>'
+    +'<select class="form-input" id="f-per" onchange="info.periodo=this.value;checkInfoBtn()">'+pOpts+'</select></div>'
+    +'<button class="btn btn-red" id="btn-info" style="width:100%;margin-top:8px;font-size:15px;padding:13px" onclick="nextFromInfo()" disabled>Continuar a la prueba</button>'
+    +'</div>';
+}
+
+function checkInfoBtn(){
+  var btn=document.getElementById('btn-info');
+  if(!btn)return;
+  var ok=info.nombre.trim().length>2&&info.codigo.trim().length>1&&info.correo.indexOf('@')>0&&info.periodo!=='';
+  btn.disabled=!ok;
+}
+
+function nextFromInfo(){
+  var fn=document.getElementById('f-nom'),fc=document.getElementById('f-cod'),
+      fe=document.getElementById('f-cor'),fp=document.getElementById('f-per');
+  if(fn)info.nombre=fn.value;
+  if(fc)info.codigo=fc.value;
+  if(fe)info.correo=fe.value;
+  if(fp)info.periodo=fp.value;
+  step=1;renderStep();
+}
+
+function renderSec(sec){
+  var col=SCOL[sec.id-1],lit=SLIT[sec.id-1];
+  var qs='';
+  if(sec.type==='likert'){
+    sec.qs.forEach(function(q,i){qs+=renderLikert(q,i,sec.id,col);});
+  }else{
+    sec.qs.forEach(function(q,i){qs+=renderMCQ(q,i,sec.id,col,lit);});
+  }
+  var allAns=sec.qs.every(function(_,i){return answers['s'+sec.id+'_'+i]!==undefined;});
+  var isLast=sec.id===5;
+  var btnBg=allAns?(isLast?'#1A7A4A':col):'#C8C8C8';
+  var btnTxt=isLast?(allAns?'Enviar prueba':'Complete todas las preguntas'):(allAns?'Siguiente seccion':'Complete todas las preguntas');
+  var btnAct=isLast?'submitTest()':'nextStep()';
+  return '<div class="sec-hdr" style="background:'+col+'">'
+    +'<div style="font-size:10px;letter-spacing:2px;opacity:.7;margin-bottom:4px;font-weight:600">SECCION '+sec.id+' DE 5</div>'
+    +'<div style="font-size:17px;font-weight:700;font-family:\'Playfair Display\',serif">'+sec.title+'</div>'
+    +'<div style="font-size:12px;opacity:.75;margin-top:4px">'+sec.time+' - '+sec.pts+' puntos</div></div>'
+    +'<div class="sec-instr" style="background:'+lit+';border-left-color:'+col+';color:'+col+'">'+sec.instr+'</div>'
+    +'<div class="sec-body">'+qs+'</div>'
+    +'<div class="nav-row">'
+    +'<button class="nav-back" onclick="prevStep()">Anterior</button>'
+    +'<button class="nav-fwd" id="btn-fwd" style="background:'+btnBg+'" onclick="'+btnAct+'"'+(allAns?'':' disabled')+'>'+btnTxt+'</button>'
+    +'</div>';
+}
+
+function renderLikert(q,i,sid,col){
+  var isInv=q.indexOf('[INVERTIDA]')>-1,text=q.replace(' [INVERTIDA]',''),cur=answers['s'+sid+'_'+i];
+  var btns='';
+  for(var v=1;v<=5;v++){
+    var s=cur===v;
+    var st=s?'background:'+col+';border-color:'+col+';color:#fff':'color:'+col;
+    btns+='<button class="lbtn'+(s?' sel':'')+'" style="'+st+'" onclick="setAns(\'s'+sid+'_'+i+'\','+v+','+sid+','+i+')">'
+      +'<span class="lbtn-num">'+v+'</span><span class="lbtn-lbl">'+SCALE[v-1]+'</span></button>';
+  }
+  return '<div class="q-block"><p class="q-text"><span class="q-num" style="color:'+col+'">'+i+1+'. </span>'+text
+    +(isInv?'<span class="inv-tag">Item inverso</span>':'')+'</p><div class="likert-row">'+btns+'</div></div>';
+}
+
+function renderMCQ(q,i,sid,col,lit){
+  var cur=answers['s'+sid+'_'+i];
+  var opts='';
+  q.opts.forEach(function(o,oi){
+    var s=cur===oi;
+    var bc=s?'border-color:'+col+';background:'+lit:'border-color:var(--border)';
+    var lc=s?'background:'+col+';color:#fff':'background:#E5E5E5;color:#888';
+    opts+='<button class="mbtn'+(s?' sel':'')+'" style="'+bc+'" onclick="setAns(\'s'+sid+'_'+i+'\','+oi+','+sid+','+i+')">'
+      +'<span class="mbtn-letter" style="'+lc+'">'+LTR[oi]+'</span>'
+      +'<span class="mbtn-text">'+o+'</span></button>';
+  });
+  return '<div class="q-block"><p class="q-text"><span class="q-num" style="color:'+col+'">'+i+1+'. </span>'+q.q+'</p>'
+    +'<div class="mcq-opts">'+opts+'</div></div>';
+}
+
+function setAns(key,val,sid,qi){
+  answers[key]=val;
+  var sec=SECS[sid-1],col=SCOL[sid-1],lit=SLIT[sid-1];
+  var el=document.getElementById('test-body');
+  if(!el)return;
+  if(sec.type==='likert'){
+    var qblocks=el.querySelectorAll('.q-block');
+    if(qblocks[qi]){
+      qblocks[qi].querySelectorAll('.lbtn').forEach(function(b,bi){
+        var v=bi+1,s=v===val;
+        b.style.background=s?col:'#fff';b.style.borderColor=s?col:'var(--border)';b.style.color=s?'#fff':col;
+      });
+    }
+  }else{
+    var qblocks2=el.querySelectorAll('.q-block');
+    if(qblocks2[qi]){
+      qblocks2[qi].querySelectorAll('.mbtn').forEach(function(b,bi){
+        var s=bi===val;
+        b.style.borderColor=s?col:'var(--border)';b.style.background=s?lit:'#FAFBFC';
+        var l=b.querySelector('.mbtn-letter');
+        if(l){l.style.background=s?col:'#E5E5E5';l.style.color=s?'#fff':'#888';}
+      });
+    }
+  }
+  var allAns=sec.qs.every(function(_,i){return answers['s'+sid+'_'+i]!==undefined;});
+  var btn=document.getElementById('btn-fwd'),isLast=sid===5;
+  if(btn){
+    btn.disabled=!allAns;
+    btn.style.background=allAns?(isLast?'#1A7A4A':col):'#C8C8C8';
+    btn.textContent=isLast?(allAns?'Enviar prueba':'Complete todas las preguntas'):(allAns?'Siguiente seccion':'Complete todas las preguntas');
+  }
+}
+
+function prevStep(){if(step>1){step--;renderStep();}else if(step===1){step=0;renderStep();}}
+function nextStep(){if(step<SECS.length){step++;renderStep();}}
+
+function submitTest(){
+  var score=calcScore(answers);
+  var now=new Date();
+  var record={
+    id:Date.now(),
+    fecha:now.toLocaleDateString('es-CO'),
+    hora:now.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}),
+    nombre:info.nombre,codigo:info.codigo,correo:info.correo,periodo:info.periodo,
+    answers:JSON.parse(JSON.stringify(answers))
+  };
+  Object.keys(score).forEach(function(k){if(k!=='answers')record[k]=score[k];});
+  // Save to localStorage (always, as backup)
+  try{
+    var prev=JSON.parse(localStorage.getItem(SK)||'[]');
+    localStorage.setItem(SK,JSON.stringify(prev.concat([record])));
+  }catch(e){}
+  // Save to Firebase (cloud - persistent across devices and sessions)
+  fbSave(record);
+  var cn=document.getElementById('confirm-name');
+  if(cn){
+    var nombre1=(info.nombre.split(',')[1]||info.nombre).trim();
+    cn.textContent='Gracias, '+nombre1+'. Tu evaluacion fue registrada exitosamente.';
+  }
+  showScreen('sc-confirm');
+}
+
+// ── RESULTS ────────────────────────────────────────────────────────────────
+function getData(){
+  // Primary: localStorage (fast, synchronous)
+  try{ return JSON.parse(localStorage.getItem(SK)||'[]'); }catch(e){ return []; }
+}
+
+// Async version that merges Firebase + localStorage (used in panel)
+function getDataMerged(callback) {
+  var local = getData();
+  if (!fbReady) { callback(local); return; }
+  fbGetAll(function(fbData) {
+    if (!fbData) { callback(local); return; }
+    // Merge: use Firebase as master, fill gaps with local
+    var fbIds = new Set(fbData.map(function(r){ return r.id; }));
+    var localOnly = local.filter(function(r){ return !fbIds.has(r.id); });
+    var merged = fbData.concat(localOnly);
+    // Update localStorage with merged data
+    try { localStorage.setItem(SK, JSON.stringify(merged)); } catch(e){}
+    callback(merged);
+  });
+}
+
+function getFiltered(){
+  var pf=document.getElementById('periodo-filter');
+  var periodoF=pf?pf.value:'';
+  return getData().filter(function(r){return !periodoF||r.periodo===periodoF;});
+}
+
+function switchTab(t){
+  activeTab=t;
+  ['dash','table'].forEach(function(id){
+    var p=document.getElementById('tab-'+id);
+    var b=document.getElementById('tab-'+id+'-btn');
+    if(p)p.classList.toggle('active',id===t);
+    if(b)b.classList.toggle('active',id===t);
+  });
+  if(t==='dash')renderDashboard();else renderTable();
+}
+
+function renderResults(){
+  // Show loading state
+  var el = document.getElementById('dash-content');
+  if (el && fbReady) {
+    el.innerHTML = '<div class="card" style="text-align:center;padding:48px">'
+      + '<div style="font-size:14px;color:var(--muted);margin-bottom:8px">Sincronizando con Firebase...</div>'
+      + '<div style="font-size:12px;color:#bbb">Cargando todos los registros de la nube</div></div>';
+  }
+  // Merge Firebase + local data, then render
+  getDataMerged(function(merged) {
+    // Update localStorage with full merged dataset
+    try { localStorage.setItem(SK, JSON.stringify(merged)); } catch(e){}
+    renderDashboard();
+    if(activeTab==='table') renderTable();
+    updateFbStatus();
+  });
+}
+
+function renderDashboard(){
+  var data=getFiltered();
+  var el=document.getElementById('dash-content');
+  if(!el)return;
+  if(!data.length){
+    el.innerHTML='<div class="card" style="text-align:center;padding:48px"><p style="color:var(--muted);font-size:15px">Aun no hay resultados registrados.</p></div>';
+    return;
+  }
+  var n=data.length;
+  var avg=(data.reduce(function(s,r){return s+r.total;},0)/n).toFixed(1);
+  var flags=data.filter(function(r){return r.flag;}).length;
+  var totals=data.map(function(r){return r.total;});
+  var top=Math.max.apply(null,totals);
+  var bot=Math.min.apply(null,totals);
+
+  var rangos=['Alto potencial','Potencial adecuado','En desarrollo','Potencial bajo','Alerta critica'];
+  var rcolors=['#1A7A4A','#1A5FA0','#A05A00','#8B3A00','#C0392B'];
+  var rbgs=['#E6F5ED','#E3EFF9','#FFF3E0','#FCE4D6','#FDECEA'];
+  var rcounts=rangos.map(function(r){return data.filter(function(d){return d.rango===r;}).length;});
+
+  var secAvg=[
+    {lbl:'S1 Comportamiento',max:15,avg:(data.reduce(function(s,r){return s+r.s1;},0)/n).toFixed(1),col:SCOL[0]},
+    {lbl:'S2 Razonamiento',max:20,avg:(data.reduce(function(s,r){return s+r.s2;},0)/n).toFixed(1),col:SCOL[1]},
+    {lbl:'S3 Agilidad',max:20,avg:(data.reduce(function(s,r){return s+r.s3;},0)/n).toFixed(1),col:SCOL[2]},
+    {lbl:'S4 Juicio',max:25,avg:(data.reduce(function(s,r){return s+r.s4;},0)/n).toFixed(1),col:SCOL[3]},
+    {lbl:'S5 Tecnico',max:20,avg:(data.reduce(function(s,r){return s+r.s5;},0)/n).toFixed(1),col:SCOL[4]}
+  ];
+
+  var secBars=secAvg.map(function(s){
+    var pct=parseFloat((s.avg/s.max*100).toFixed(0));
+    return '<div class="chart-bar-row">'
+      +'<div class="chart-bar-label">'+s.lbl+'</div>'
+      +'<div class="chart-bar-outer"><div class="chart-bar-inner" style="width:'+pct+'%;background:'+s.col+'">'
+      +'<span class="chart-bar-val">'+s.avg+'</span></div></div>'
+      +'<div class="chart-bar-pct">'+pct+'%</div></div>';
+  }).join('');
+
+  var distItems=rangos.map(function(r,i){
+    return '<div class="dist-item" style="border-top-color:'+rcolors[i]+';background:'+rbgs[i]+'">'
+      +'<div style="font-size:22px;font-weight:700;font-family:\'Playfair Display\',serif;color:'+rcolors[i]+'">'+rcounts[i]+'</div>'
+      +'<div style="font-size:10px;color:var(--muted);font-weight:600;margin-top:2px">'+r+'</div></div>';
+  }).join('');
+
+  var distBars=rangos.map(function(r,i){
+    if(!rcounts[i])return '';
+    var pct=parseFloat((rcounts[i]/n*100).toFixed(0));
+    return '<div class="chart-bar-row">'
+      +'<div class="chart-bar-label" style="font-size:11px">'+r+'</div>'
+      +'<div class="chart-bar-outer"><div class="chart-bar-inner" style="width:'+pct+'%;background:'+rcolors[i]+'">'
+      +'<span class="chart-bar-val">'+rcounts[i]+'</span></div></div>'
+      +'<div class="chart-bar-pct">'+pct+'%</div></div>';
+  }).join('');
+
+  var periodoMap={};
+  data.forEach(function(r){var p=r.periodo||'No especificado';periodoMap[p]=(periodoMap[p]||0)+1;});
+  var periodoRows=Object.keys(periodoMap).sort().map(function(p){
+    var c=periodoMap[p],pct=parseFloat((c/n*100).toFixed(0));
+    return '<div class="chart-bar-row">'
+      +'<div class="chart-bar-label"><span class="periodo-tag">'+p+'</span></div>'
+      +'<div class="chart-bar-outer"><div class="chart-bar-inner" style="width:'+pct+'%;background:var(--blue)">'
+      +'<span class="chart-bar-val">'+c+'</span></div></div>'
+      +'<div class="chart-bar-pct">'+pct+'%</div></div>';
+  }).join('');
+
+  var sorted=[].concat(data).sort(function(a,b){return b.total-a.total;});
+  var top5rows=sorted.slice(0,5).map(function(r,i){
+    var medal=i===0?'#FFD700':i===1?'#C0C0C0':i===2?'#CD7F32':'var(--blue-t)';
+    var mc=i<3?'#333':'var(--blue-d)';
+    return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #F0F0F0">'
+      +'<div style="width:28px;height:28px;border-radius:50%;background:'+medal+';display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:'+mc+'">'+( i+1)+'</div>'
+      +'<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+r.nombre+'</div>'
+      +'<div style="font-size:11px;color:var(--muted)">'+r.codigo+' <span class="periodo-tag">'+( r.periodo||'—')+'</span></div></div>'
+      +'<div style="font-size:18px;font-weight:700;color:var(--blue-d);font-family:\'Playfair Display\',serif">'+r.total+'</div></div>';
+  }).join('');
+
+  var aprobados=data.filter(function(d){return d.total>=55;}).length;
+
+  var flagRows='';
+  if(flags>0){
+    flagRows='<div class="card" style="border-left:4px solid var(--red);margin-top:20px">'
+      +'<div class="dash-title" style="color:var(--red-d)">Estudiantes con bandera roja ('+flags+')</div>'
+      +'<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px">'
+      +'<thead><tr style="background:var(--red-t)">'
+      +'<th style="padding:8px 12px;text-align:left;color:var(--red-d)">Nombre</th>'
+      +'<th style="padding:8px;text-align:center;color:var(--red-d)">Periodo</th>'
+      +'<th style="padding:8px;text-align:center;color:var(--red-d)">Total</th>'
+      +'<th style="padding:8px;text-align:center;color:var(--red-d)">S4</th>'
+      +'<th style="padding:8px;text-align:center;color:var(--red-d)">S5</th>'
+      +'<th style="padding:8px;text-align:left;color:var(--red-d)">Motivo</th>'
+      +'</tr></thead><tbody>';
+    data.filter(function(r){return r.flag;}).forEach(function(r){
+      var motivos=[];
+      if(r.total<40)motivos.push('Total < 40');
+      if(r.s4<12.5)motivos.push('S4 < 12.5');
+      if(r.s5<8)motivos.push('S5 < 8');
+      flagRows+='<tr><td style="padding:8px 12px;font-weight:500">'+r.nombre+'</td>'
+        +'<td style="padding:8px;text-align:center"><span class="periodo-tag">'+(r.periodo||'—')+'</span></td>'
+        +'<td style="padding:8px;text-align:center;font-weight:700;color:var(--red)">'+r.total+'</td>'
+        +'<td style="padding:8px;text-align:center;color:'+(r.s4<12.5?'var(--red)':'inherit')+'">'+r.s4+'</td>'
+        +'<td style="padding:8px;text-align:center;color:'+(r.s5<8?'var(--red)':'inherit')+'">'+r.s5+'</td>'
+        +'<td style="padding:8px;font-size:12px;color:var(--muted)">'+motivos.join(' - ')+'</td></tr>';
+    });
+    flagRows+='</tbody></table></div></div>';
+  }
+
+  el.innerHTML='<div class="g4" style="margin-bottom:28px">'
+    +'<div class="stat-card" style="border-top:4px solid var(--blue)"><div class="stat-val" style="color:var(--blue)">'+n+'</div><div class="stat-lbl">Total evaluados</div></div>'
+    +'<div class="stat-card" style="border-top:4px solid var(--green)"><div class="stat-val" style="color:var(--green)">'+avg+'</div><div class="stat-lbl">Promedio general</div></div>'
+    +'<div class="stat-card" style="border-top:4px solid var(--blue-d)"><div class="stat-val" style="color:var(--blue-d)">'+top+' / '+bot+'</div><div class="stat-lbl">Max / Min</div></div>'
+    +'<div class="stat-card" style="border-top:4px solid var(--red)"><div class="stat-val" style="color:var(--red)">'+flags+'</div><div class="stat-lbl">Banderas rojas</div></div>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">'
+    +'<div class="card"><div class="dash-title">Promedio por seccion</div>'+secBars+'</div>'
+    +'<div class="card"><div class="dash-title">Distribucion por rango PICPE</div><div class="dist-grid">'+distItems+'</div>'+distBars+'</div>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">'
+    +'<div class="card"><div class="dash-title">Puntajes aprobatorios</div>'
+    +'<div style="font-size:40px;font-weight:700;color:var(--green);font-family:\'Playfair Display\',serif;text-align:center;margin:20px 0">'+aprobados+' / '+n+'</div>'
+    +'<div style="text-align:center;font-size:13px;color:var(--muted)">estudiantes con puntaje >= 55 pts</div></div>'
+    +'<div class="card"><div class="dash-title">Top 5 puntajes</div>'+top5rows+'</div>'
+    +'</div>'
+    +'<div class="card" style="margin-bottom:20px"><div class="dash-title">Evaluados por periodo academico</div>'+(periodoRows||'<p style="color:var(--muted);font-size:13px">Sin datos de periodo.</p>')+'</div>'
+    +flagRows;
+}
+
+function renderTable(){
+  var data=getFiltered();
+  var n=data.length;
+  var avg=n?(data.reduce(function(s,r){return s+r.total;},0)/n).toFixed(1):0;
+  var flags=data.filter(function(r){return r.flag;}).length;
+  var top=n?Math.max.apply(null,data.map(function(r){return r.total;})):0;
+  var sg=document.getElementById('stats-grid');
+  if(sg)sg.innerHTML=[
+    ['Total evaluados',n,'var(--blue)'],
+    ['Promedio general',avg,'var(--green)'],
+    ['Puntaje mas alto',top,'var(--blue-d)'],
+    ['Banderas rojas',flags,'var(--red)']
+  ].map(function(x){return '<div class="stat-card"><div class="stat-val" style="color:'+x[2]+'">'+x[1]+'</div><div class="stat-lbl">'+x[0]+'</div></div>';}).join('');
+
+  var q=(document.getElementById('srch')||{value:''}).value.toLowerCase();
+  var sb=(document.getElementById('sort-sel')||{value:'total'}).value;
+  var rows=data.filter(function(r){
+    return (r.nombre||'').toLowerCase().indexOf(q)>-1||(r.codigo||'').toLowerCase().indexOf(q)>-1||(r.correo||'').toLowerCase().indexOf(q)>-1;
+  });
+  rows.sort(function(a,b){
+    var v=sortDir==='desc'?-1:1;
+    if(sb==='nombre')return v*((a.nombre||'').localeCompare(b.nombre||''));
+    return v*((a[sb]||0)-(b[sb]||0));
+  });
+  var wrap=document.getElementById('results-wrap');
+  if(!wrap)return;
+  if(!data.length){wrap.innerHTML='<div class="card" style="text-align:center;padding:48px"><p style="color:var(--muted)">Aun no hay resultados registrados.</p></div>';return;}
+  var trs=rows.map(function(r,i){
+    var tc=r.total>=70?'#1A7A4A':r.total>=55?'#A05A00':'#C0392B';
+    return '<tr onclick="showDetail('+r.id+')">'
+      +'<td class="c" style="font-weight:700;color:var(--blue)">'+(i+1)+'</td>'
+      +'<td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500">'+(r.nombre||'')+'</td>'
+      +'<td class="c" style="color:var(--muted);font-size:12px">'+(r.codigo||'')+'</td>'
+      +'<td style="max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:12px">'+(r.correo||'')+'</td>'
+      +'<td class="c"><span class="periodo-tag">'+(r.periodo||'—')+'</span></td>'
+      +'<td class="c" style="color:var(--muted);font-size:12px;white-space:nowrap">'+(r.fecha||'')+'</td>'
+      +'<td class="c">'+r.s1+'</td><td class="c">'+r.s2+'</td><td class="c">'+r.s3+'</td><td class="c">'+r.s4+'</td><td class="c">'+r.s5+'</td>'
+      +'<td class="c" style="font-weight:700;color:'+tc+';font-size:15px">'+r.total+'</td>'
+      +'<td class="c"><span class="badge" style="background:'+r.rb+';color:'+r.rt+'">'+r.rango+'</span></td>'
+      +'<td class="c" style="color:'+(r.flag?'var(--red)':'#ccc')+';font-size:15px">'+(r.flag?'&#9873;':'—')+'</td>'
+      +'</tr>';
+  }).join('');
+  wrap.innerHTML='<div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">'
+    +'<div style="overflow-x:auto"><table class="rtbl"><thead><tr>'
+    +'<th class="c">Pos.</th><th>Nombre</th><th class="c">Codigo</th><th>Correo</th>'
+    +'<th class="c">Periodo</th><th class="c">Fecha</th>'
+    +'<th class="c">S1</th><th class="c">S2</th><th class="c">S3</th><th class="c">S4</th><th class="c">S5</th>'
+    +'<th class="c">Total</th><th class="c">Rango</th><th class="c">&#9873;</th>'
+    +'</tr></thead><tbody>'+trs+'</tbody></table></div>'
+    +'<div style="padding:10px 16px;background:var(--bg);border-top:1px solid var(--border);font-size:12px;color:var(--muted)">'
+    +rows.length+' de '+data.length+' registro(s) - Clic en una fila para ver el detalle</div></div>';
+}
+
+function toggleDir(){
+  sortDir=sortDir==='desc'?'asc':'desc';
+  var db=document.getElementById('dir-btn');
+  if(db)db.textContent=sortDir==='desc'?'Descendente':'Ascendente';
+  renderTable();
+}
+
+function showDetail(id){
+  var data=getData();
+  var r=data.find(function(d){return d.id===id;});
+  if(!r)return;
+  var secs=[
+    {lbl:'S1 Comportamiento',val:r.s1,max:15,col:SCOL[0]},
+    {lbl:'S2 Razonamiento',val:r.s2,max:20,col:SCOL[1]},
+    {lbl:'S3 Cognicion',val:r.s3,max:20,col:SCOL[2]},
+    {lbl:'S4 Juicio Situacional',val:r.s4,max:25,col:SCOL[3]},
+    {lbl:'S5 Conocimientos',val:r.s5,max:20,col:SCOL[4]}
+  ];
+  var bars=secs.map(function(s){
+    var pct=parseFloat((s.val/s.max*100).toFixed(0));
+    return '<div class="bar-wrap"><div class="bar-meta"><span>'+s.lbl+'</span><span style="color:'+s.col+'">'+s.val+' / '+s.max+'</span></div>'
+      +'<div class="bar-track"><div class="bar-fill" style="background:'+s.col+';width:'+pct+'%"></div></div></div>';
+  }).join('');
+
+  var accItems='';
+  var alerts='';
+  if(r.answers){
+    var criticals=[];
+    if((r.answers['s1_2']||3)>3)criticals.push('Tendencia a trabajar en solitario ante la incertidumbre.');
+    if((r.answers['s1_8']||3)<3)criticals.push('Posible descuido con la confidencialidad (P9 baja).');
+    if((r.answers['s1_9']||3)<3)criticals.push('Dificultad para reconocer errores propios (P10 baja).');
+    if(criticals.length)alerts='<div style="background:var(--red-t);border-left:3px solid var(--red);padding:10px 14px;border-radius:0 6px 6px 0;margin-top:10px;font-size:12px;color:#7B1A12">'+criticals.map(function(c){return '<div>- '+c+'</div>';}).join('')+'</div>';
+  }
+  accItems+='<div class="fb-acc"><div class="fb-acc-hdr" onclick="toggleAcc(this)"><span>S1 Comportamiento laboral</span><span>v</span></div>'
+    +'<div class="fb-acc-body">'+FB.s1[getFBLevel(r.s1,15)]+alerts+'</div></div>';
+
+  ['s2','s3','s4','s5'].forEach(function(sk,si){
+    var si2=si+1,sec=SECS[si2];
+    var wrongHtml='';
+    if(r.answers){
+      sec.qs.forEach(function(q,qi){
+        var given=r.answers[sk+'_'+qi];
+        if(given!==q.ans&&given!==undefined){
+          wrongHtml+='<div style="margin-bottom:10px;padding-left:12px;border-left:3px solid '+SCOL[si2]+'">'
+            +'<div style="font-size:12px;font-weight:600;color:'+SCOL[si2]+';margin-bottom:3px">Preg.'+(qi+1)+': marco '+LTR[given]+' - correcta: '+LTR[q.ans]+'</div>'
+            +'<div style="font-size:12px;color:var(--muted)">'+(q.fb||'')+'</div></div>';
+        }
+      });
+    }
+    var val=si===0?r.s2:si===1?r.s3:si===2?r.s4:r.s5;
+    accItems+='<div class="fb-acc"><div class="fb-acc-hdr" onclick="toggleAcc(this)"><span>'+sec.code+' '+sec.title+'</span><span>v</span></div>'
+      +'<div class="fb-acc-body">'+FB[sk][getFBLevel(val,sec.pts)]
+      +(wrongHtml?'<div style="margin-top:10px;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px">Items con respuesta incorrecta:</div>'+wrongHtml:'<div style="margin-top:8px;color:var(--green);font-size:12px;font-weight:600">Sin errores en esta seccion.</div>')
+      +'</div></div>';
+  });
+
+  var recText=r.total>=85?'Asignar escenarios de mayor complejidad. Considerar liderazgo de subproyectos.':r.total>=70?'Asignacion estandar. Plan de aprendizaje normal con monitoreo periodico.':r.total>=55?'Acompanamiento cercano. Plan de mejora especifico. Visitas adicionales del coordinador.':r.total>=40?'Intervencion temprana requerida. Escenarios supervisados y tutorias de nivelacion.':'BANDERA ROJA. Revisar prerrequisitos. Considerar aplazamiento del inicio de practica.';
+
+  document.getElementById('detail-body').innerHTML=
+    '<div style="background:var(--blue-d);border-radius:var(--radius) var(--radius) 0 0;padding:22px 28px;color:#fff">'
+    +'<div style="font-size:10px;letter-spacing:2px;opacity:.65;margin-bottom:6px;font-weight:600">INFORME INDIVIDUAL PICPE - SOLO COORDINADOR</div>'
+    +'<h2 style="font-size:20px;margin-bottom:4px">'+r.nombre+'</h2>'
+    +'<div style="font-size:12px;opacity:.75">'+r.codigo+' - '+r.correo+' - <span style="background:rgba(255,255,255,.2);padding:1px 8px;border-radius:10px">'+(r.periodo||'—')+'</span> - '+(r.fecha||'')+'</div></div>'
+    +'<div class="card" style="border-top:none;border-radius:0 0 var(--radius) var(--radius)">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px">'
+    +'<div><div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Puntaje Total</div>'
+    +'<div style="font-size:44px;font-weight:700;color:var(--blue-d);font-family:\'Playfair Display\',serif;line-height:1">'+r.total+'<span style="font-size:16px;color:#bbb">/100</span></div></div>'
+    +'<div style="text-align:right"><div style="background:'+r.rb+';color:'+r.rt+';padding:9px 18px;border-radius:7px;font-size:14px;font-weight:700;margin-bottom:'+(r.flag?'8px':'0')+'">'+r.rango+'</div>'
+    +(r.flag?'<div style="font-size:12px;color:var(--red);font-weight:600">Bandera roja activa</div>':'')+'</div></div>'
+    +bars
+    +'<div style="background:var(--bg);border-radius:8px;padding:14px 18px;margin:18px 0">'
+    +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--blue-d);margin-bottom:6px">Recomendacion del coordinador</div>'
+    +'<p style="font-size:13px;color:var(--text);line-height:1.7;margin:0">'+recText+'</p></div>'
+    +'<h3 style="font-size:14px;color:var(--blue-d);margin:20px 0 12px;font-family:\'Source Sans 3\',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.6px">Retroalimentacion por seccion</h3>'
+    +accItems
+    +'<div style="display:flex;gap:10px;margin-top:22px;flex-wrap:wrap">'
+    +'<button class="btn btn-blue" style="flex:1" onclick="openEmail('+r.id+')">Generar correo de retroalimentacion</button>'
+    +'<button class="btn" style="background:var(--bg);color:var(--text);border:1.5px solid var(--border)" onclick="showScreen(\'sc-results\');renderResults()">Volver al panel</button>'
+    +'</div></div>';
+  showScreen('sc-detail');
+}
+
+function toggleAcc(hdr){
+  var b=hdr.nextElementSibling;
+  b.classList.toggle('open');
+  hdr.lastElementChild.textContent=b.classList.contains('open')?'^':'v';
+}
+
+function openEmail(id){
+  var data=getData();
+  var r=data.find(function(d){return d.id===id;});
+  if(!r)return;
+  var nombre1=(r.nombre.split(',')[1]||r.nombre).trim();
+
+  function secFB(key,val,max,sec,secIdx,qPrefix){
+    var level=getFBLevel(val,max);
+    var wrongItems='';
+    if(r.answers&&sec.type!=='likert'){
+      sec.qs.forEach(function(q,qi){
+        var k=qPrefix+'_'+qi,given=r.answers[k];
+        if(given!==q.ans&&given!==undefined){
+          wrongItems+='<div style="margin:6px 0 6px 12px;padding-left:10px;border-left:3px solid #ddd;font-size:13px;color:#444">'
+            +'<strong style="color:'+SCOL[secIdx]+'">Preg.'+(qi+1)+' (marco '+LTR[given]+', correcta '+LTR[q.ans]+'):</strong> '+(q.fb||'')+'</div>';
+        }
+      });
+    }
+    return '<div style="margin-bottom:14px;padding:14px 16px;background:#F8F9FC;border-radius:7px;border-left:4px solid '+SCOL[secIdx]+'">'
+      +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:'+SCOL[secIdx]+';margin-bottom:4px">'+sec.code+' - '+sec.title+'</div>'
+      +'<div style="font-size:13px;color:#333;margin-bottom:'+(wrongItems?'10px':'0')+'">'+FB[key][level]+'</div>'
+      +(wrongItems?'<div style="font-size:12px;font-weight:700;color:#888;margin-bottom:4px">Items para repasar:</div>'+wrongItems:'')
+      +'</div>';
+  }
+
+  var rec=r.total>=85?'Tu desempeno refleja un perfil solido. Se te asignaran escenarios de mayor complejidad.':r.total>=70?'Tu desempeno es adecuado para iniciar la practica. Recibiras acompanamiento regular.':r.total>=55?'Tu desempeno muestra bases suficientes con areas que requieren refuerzo. Tendras un plan de mejora personalizado.':r.total>=40?'Se identificaron brechas importantes. Se iniciara un plan de intervencion temprana.':'Se identificaron competencias insuficientes. El coordinador se comunicara contigo para revisar los proximos pasos.';
+
+  var emailHTML='<div style="font-family:Georgia,serif;max-width:660px;margin:0 auto">'
+    +'<div style="background:#0C3D6E;padding:18px 24px;border-radius:10px 10px 0 0">'
+    +'<div style="color:rgba(255,255,255,.7);font-size:11px;letter-spacing:1.5px;margin-bottom:4px">UNIVERSIDAD CESMAG - ADMINISTRACION DE EMPRESAS</div>'
+    +'<div style="color:#fff;font-size:17px;font-weight:700">Retroalimentacion PICPE - Practica Empresarial '+(r.periodo||'2026')+'</div></div>'
+    +'<div style="background:#fff;border:1px solid #dde3ec;border-top:none;border-radius:0 0 10px 10px;padding:24px">'
+    +'<p style="font-size:14px;color:#1C1C1C;line-height:1.8;margin-bottom:20px">Estimado/a <strong>'+nombre1+'</strong>,<br><br>'
+    +'A continuacion encontrara la retroalimentacion de su evaluacion PICPE realizada el '+(r.fecha||'')+' (Periodo: '+(r.periodo||'—')+').</p>'
+    +'<div style="background:#1A5FA0;color:#fff;border-radius:8px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">'
+    +'<div><div style="font-size:11px;opacity:.7;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Clasificacion PICPE</div>'
+    +'<div style="font-size:22px;font-weight:700;font-family:Georgia,serif">'+r.rango+'</div></div>'
+    +'<div style="text-align:right"><div style="font-size:11px;opacity:.7;margin-bottom:4px">Puntaje obtenido</div>'
+    +'<div style="font-size:28px;font-weight:700">'+r.total+'<span style="font-size:14px;opacity:.7">/100</span></div></div></div>'
+    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px">'
+    +[['S1 Comportamiento',r.s1,15],['S2 Razonamiento',r.s2,20],['S3 Cognicion',r.s3,20],['S4 Juicio',r.s4,25],['S5 Tecnico',r.s5,20]].map(function(x){
+      return '<div style="background:#F5F7FA;border:1px solid #dde3ec;border-radius:7px;padding:10px;text-align:center">'
+        +'<div style="font-size:18px;font-weight:700;color:#1A5FA0">'+x[1]+'<span style="font-size:11px;color:#aaa">/'+x[2]+'</span></div>'
+        +'<div style="font-size:10px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.3px">'+x[0]+'</div></div>';
+    }).join('')
+    +'<div style="background:#0C3D6E;border-radius:7px;padding:10px;text-align:center">'
+    +'<div style="font-size:22px;font-weight:700;color:#fff">'+r.total+'<span style="font-size:11px;opacity:.7">/100</span></div>'
+    +'<div style="font-size:10px;color:rgba(255,255,255,.7);font-weight:600;text-transform:uppercase">Total</div></div>'
+    +'</div>'
+    +'<div style="background:#E3EFF9;border-left:4px solid #1A5FA0;border-radius:0 7px 7px 0;padding:14px 18px;margin-bottom:20px">'
+    +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#0C3D6E;margin-bottom:6px">Recomendacion del coordinador</div>'
+    +'<p style="font-size:13px;color:#1C1C1C;line-height:1.7;margin:0">'+rec+'</p></div>'
+    +'<div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#0C3D6E;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid #E3EFF9">Retroalimentacion detallada por seccion</div>'
+    +secFB('s1',r.s1,15,SECS[0],0,'s1')
+    +secFB('s2',r.s2,20,SECS[1],1,'s2')
+    +secFB('s3',r.s3,20,SECS[2],2,'s3')
+    +secFB('s4',r.s4,25,SECS[3],3,'s4')
+    +secFB('s5',r.s5,20,SECS[4],4,'s5')
+    +(r.flag?'<div style="background:#FDECEA;border-left:4px solid #C0392B;border-radius:0 7px 7px 0;padding:14px 18px;margin:16px 0;font-size:13px;color:#8B1A12;line-height:1.7"><strong>Nota importante:</strong> Su perfil activo indicadores de alerta. El coordinador se comunicara con usted para programar una reunion de acompanamiento.</div>':'')
+    +'<div style="margin-top:22px;padding-top:16px;border-top:1px solid #eee;font-size:12px;color:#888;line-height:1.7">'
+    +'<strong style="color:#333">Mg. Fabian Alexander Campo Insuasty</strong><br>'
+    +'Coordinador Practica Empresarial Externa (PEE)<br>'
+    +'Programa de Administracion de Empresas - Universidad CESMAG<br>'
+    +'facampo@unicesmag.edu.co - cel. 3005580358<br>'
+    +'Atencion: miercoles 4:00 p.m. - Sala de profesores</div>'
+    +'</div></div>';
+
+  var epc=document.getElementById('email-preview-content');
+  if(epc)epc.innerHTML='<div style="background:#F8F9FC;border:1px solid var(--border);border-radius:8px;overflow:hidden">'
+    +'<div style="background:var(--blue-d);padding:14px 20px;color:#fff">'
+    +'<div style="font-size:11px;opacity:.7;margin-bottom:2px">Para:</div>'
+    +'<div style="font-size:13px;font-weight:600">'+r.nombre+' &lt;'+r.correo+'&gt;</div>'
+    +'<div style="font-size:11px;opacity:.7;margin-top:6px">Asunto: Retroalimentacion PICPE '+(r.periodo||'')+' - '+( r.nombre.split(',')[0]||r.nombre)+'</div></div>'
+    +'<div style="padding:20px;line-height:1.75;color:var(--text)" id="email-raw-content">'+emailHTML+'</div></div>';
+  document.getElementById('email-modal').style.display='flex';
+  var co=document.getElementById('copy-ok');
+  if(co)co.style.display='none';
+}
+
+function closeEmailModal(){document.getElementById('email-modal').style.display='none';}
+
+function copyEmail(){
+  var el=document.getElementById('email-raw-content');
+  if(!el)return;
+  try{
+    if(navigator.clipboard&&window.ClipboardItem){
+      var blob=new Blob([el.innerHTML],{type:'text/html'});
+      navigator.clipboard.write([new ClipboardItem({'text/html':blob})]).then(function(){showCopyOk();}).catch(function(){fallbackCopy(el);});
+    }else{fallbackCopy(el);}
+  }catch(e){fallbackCopy(el);}
+}
+
+function fallbackCopy(el){
+  var r=document.createRange();r.selectNode(el);
+  window.getSelection().removeAllRanges();window.getSelection().addRange(r);
+  document.execCommand('copy');window.getSelection().removeAllRanges();showCopyOk();
+}
+
+function showCopyOk(){var c=document.getElementById('copy-ok');if(c)c.style.display='block';}
+
+function clearData(){
+  if(confirm('Eliminar todos los registros? Esta accion borrara datos en Firebase Y en este dispositivo. No se puede deshacer.')){
+    localStorage.removeItem(SK);
+    fbClearAll(function(){ renderResults(); });
+  }
+}
+
+function exportCSV(){
+  var data=getFiltered();
+  var h=['Pos','Nombre','Codigo','Correo','Periodo','Fecha','Hora','S1','S2','S3','S4','S5','Total','Rango','Bandera'];
+  var rows=[h].concat(data.map(function(r,i){
+    return [i+1,r.nombre,r.codigo,r.correo,r.periodo||'',r.fecha,r.hora||'',r.s1,r.s2,r.s3,r.s4,r.s5,r.total,r.rango,r.flag?'SI':'No'];
+  }));
+  var csv=rows.map(function(r){
+    return r.map(function(v){
+      var s=String(v||'').replace(/"/g,'""');
+      return '"'+s+'"';
+    }).join(',');
+  }).join('\r\n');
+  var bom='\uFEFF';
+  var blob=new Blob([bom+csv],{type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;a.download='PICPE_'+new Date().toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// Initialize Firebase status on load
+document.addEventListener('DOMContentLoaded', function(){ updateFbStatus(); });
+
+</script>
+</body>
+</html>
