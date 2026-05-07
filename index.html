@@ -158,6 +158,7 @@ h1,h2,h3{font-family:'Playfair Display',serif}
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
       <button class="btn-ghost" onclick="goHome()">Inicio</button>
       <span id="step-lbl" style="font-size:12px;color:var(--muted);font-weight:600"></span>
+      <span id="timer-display" style="font-size:12px;font-weight:700;color:var(--muted)"></span>
     </div>
     <div class="prog-wrap"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
     <div id="test-body"></div>
@@ -260,6 +261,12 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 <script>
 
 const SK='picpe_v4_2026';
+
+// ── Escapa HTML para prevenir XSS al insertar datos de usuario en innerHTML ─
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+
+// ── Caché en memoria de registros mergeados (Firebase + local) ────────────
+var cachedData=[];
 
 // ═══════════════════════════════════════════════════════════════════════════
 // FIREBASE CONFIG
@@ -370,7 +377,7 @@ const FB={
 function getFBLevel(v,m){const p=v/m;return p>=0.75?'alto':p>=0.5?'medio':'bajo';}
 
 const SECS=[
-  {id:1,code:'S1',title:'Comportamiento Laboral y Autopercepcin',time:'12 min',pts:15,type:'likert',
+  {id:1,code:'S1',title:'Comportamiento Laboral y Autopercepción',time:'12 min',pts:15,type:'likert',
    instr:'Marque del 1 al 5 que tan frecuente es ese comportamiento en usted.',
    qs:['Cuando recibo una tarea nueva sin instrucciones claras, busco informacion por mi cuenta antes de preguntar.',
        'Cumplo los compromisos que adquiero, aunque eso implique trabajar mas tiempo del habitual.',
@@ -453,6 +460,26 @@ const SECS=[
 // ── STATE ──────────────────────────────────────────────────────────────────
 var step=0, info={nombre:'',codigo:'',correo:'',periodo:''}, answers={}, sortDir='desc', activeTab='dash';
 
+// ── TIMER ─────────────────────────────────────────────────────────────────
+var timerInterval=null, timerSeconds=0;
+function startTimer(){
+  clearTimerInterval();
+  timerSeconds=90*60;
+  timerInterval=setInterval(function(){
+    timerSeconds--;
+    updateTimerDisplay();
+    if(timerSeconds<=0){clearTimerInterval();submitTest();}
+  },1000);
+}
+function clearTimerInterval(){if(timerInterval){clearInterval(timerInterval);timerInterval=null;}}
+function updateTimerDisplay(){
+  var el=document.getElementById('timer-display');
+  if(!el)return;
+  var m=Math.floor(timerSeconds/60),s=timerSeconds%60;
+  el.textContent='⏱ '+m+':'+(s<10?'0':'')+s;
+  el.style.color=timerSeconds<300?'var(--red)':'var(--muted)';
+}
+
 // ── SCORE ──────────────────────────────────────────────────────────────────
 function calcScore(ans){
   var s1r=0;
@@ -481,7 +508,7 @@ function showScreen(id){
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
 }
-function goHome(){showScreen('sc-home');}
+function goHome(){clearTimerInterval();showScreen('sc-home');}
 
 function startTest(){
   step=0;answers={};info={nombre:'',codigo:'',correo:'',periodo:''};
@@ -496,13 +523,26 @@ function openDocente(){
   if(pe)pe.style.display='none';
 }
 
-function doLogin(){
+// Hash SHA-256 de la contraseña del coordinador (no almacenar plaintext)
+// Para cambiar la contraseña: ejecutar en consola →
+//   crypto.subtle.digest('SHA-256',new TextEncoder().encode('NUEVA_CLAVE'))
+//     .then(b=>console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')))
+const PWD_HASH='1363fba82afb371906f188e675ed88b480a49a2225f5558b5e88fdb93a1217eb';
+
+async function doLogin(){
   var pi=document.getElementById('pwd-input');
   var pe=document.getElementById('pwd-err');
-  if(pi && pi.value==='cesmagadmin*'){
-    showScreen('sc-results');
-    renderResults();
-  } else {
+  if(!pi)return;
+  try{
+    var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pi.value));
+    var hash=[...new Uint8Array(buf)].map(function(x){return x.toString(16).padStart(2,'0');}).join('');
+    if(hash===PWD_HASH){
+      showScreen('sc-results');
+      renderResults();
+    }else{
+      if(pe)pe.style.display='block';
+    }
+  }catch(e){
     if(pe)pe.style.display='block';
   }
 }
@@ -541,7 +581,8 @@ function renderInfoStep(){
 function checkInfoBtn(){
   var btn=document.getElementById('btn-info');
   if(!btn)return;
-  var ok=info.nombre.trim().length>2&&info.codigo.trim().length>1&&info.correo.indexOf('@')>0&&info.periodo!=='';
+  var emailOk=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(info.correo);
+  var ok=info.nombre.trim().length>2&&info.codigo.trim().length>1&&emailOk&&info.periodo!=='';
   btn.disabled=!ok;
 }
 
@@ -552,7 +593,7 @@ function nextFromInfo(){
   if(fc)info.codigo=fc.value;
   if(fe)info.correo=fe.value;
   if(fp)info.periodo=fp.value;
-  step=1;renderStep();
+  step=1;startTimer();renderStep();
 }
 
 function renderSec(sec){
@@ -645,10 +686,16 @@ function prevStep(){if(step>1){step--;renderStep();}else if(step===1){step=0;ren
 function nextStep(){if(step<SECS.length){step++;renderStep();}}
 
 function submitTest(){
+  // Verificar si el código ya fue registrado
+  var existing=getData().some(function(r){return r.codigo.trim().toLowerCase()===info.codigo.trim().toLowerCase();});
+  if(existing){
+    if(!confirm('El código '+info.codigo+' ya tiene un registro previo en este dispositivo. ¿Desea enviar de todas formas?'))return;
+  }
+  clearTimerInterval();
   var score=calcScore(answers);
   var now=new Date();
   var record={
-    id:Date.now(),
+    id:Date.now()+'_'+Math.random().toString(36).slice(2,9),
     fecha:now.toLocaleDateString('es-CO'),
     hora:now.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}),
     nombre:info.nombre,codigo:info.codigo,correo:info.correo,periodo:info.periodo,
@@ -686,8 +733,9 @@ function getDataMerged(callback) {
     var fbIds = new Set(fbData.map(function(r){ return r.id; }));
     var localOnly = local.filter(function(r){ return !fbIds.has(r.id); });
     var merged = fbData.concat(localOnly);
-    // Update localStorage with merged data
+    // Update localStorage and in-memory cache with merged data
     try { localStorage.setItem(SK, JSON.stringify(merged)); } catch(e){}
+    cachedData=merged;
     callback(merged);
   });
 }
@@ -881,13 +929,13 @@ function renderTable(){
   if(!data.length){wrap.innerHTML='<div class="card" style="text-align:center;padding:48px"><p style="color:var(--muted)">Aun no hay resultados registrados.</p></div>';return;}
   var trs=rows.map(function(r,i){
     var tc=r.total>=70?'#1A7A4A':r.total>=55?'#A05A00':'#C0392B';
-    return '<tr onclick="showDetail('+r.id+')">'
+    return '<tr onclick="showDetail(\''+r.id+'\')">'
       +'<td class="c" style="font-weight:700;color:var(--blue)">'+(i+1)+'</td>'
-      +'<td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500">'+(r.nombre||'')+'</td>'
-      +'<td class="c" style="color:var(--muted);font-size:12px">'+(r.codigo||'')+'</td>'
-      +'<td style="max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:12px">'+(r.correo||'')+'</td>'
-      +'<td class="c"><span class="periodo-tag">'+(r.periodo||'—')+'</span></td>'
-      +'<td class="c" style="color:var(--muted);font-size:12px;white-space:nowrap">'+(r.fecha||'')+'</td>'
+      +'<td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500">'+esc(r.nombre)+'</td>'
+      +'<td class="c" style="color:var(--muted);font-size:12px">'+esc(r.codigo)+'</td>'
+      +'<td style="max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:12px">'+esc(r.correo)+'</td>'
+      +'<td class="c"><span class="periodo-tag">'+esc(r.periodo||'—')+'</span></td>'
+      +'<td class="c" style="color:var(--muted);font-size:12px;white-space:nowrap">'+esc(r.fecha||'')+'</td>'
       +'<td class="c">'+r.s1+'</td><td class="c">'+r.s2+'</td><td class="c">'+r.s3+'</td><td class="c">'+r.s4+'</td><td class="c">'+r.s5+'</td>'
       +'<td class="c" style="font-weight:700;color:'+tc+';font-size:15px">'+r.total+'</td>'
       +'<td class="c"><span class="badge" style="background:'+r.rb+';color:'+r.rt+'">'+r.rango+'</span></td>'
@@ -913,8 +961,8 @@ function toggleDir(){
 }
 
 function showDetail(id){
-  var data=getData();
-  var r=data.find(function(d){return d.id===id;});
+  var data=cachedData.length?cachedData:getData();
+  var r=data.find(function(d){return String(d.id)===String(id);});
   if(!r)return;
   var secs=[
     {lbl:'S1 Comportamiento',val:r.s1,max:15,col:SCOL[0]},
@@ -966,8 +1014,8 @@ function showDetail(id){
   document.getElementById('detail-body').innerHTML=
     '<div style="background:var(--blue-d);border-radius:var(--radius) var(--radius) 0 0;padding:22px 28px;color:#fff">'
     +'<div style="font-size:10px;letter-spacing:2px;opacity:.65;margin-bottom:6px;font-weight:600">INFORME INDIVIDUAL PICPE - SOLO COORDINADOR</div>'
-    +'<h2 style="font-size:20px;margin-bottom:4px">'+r.nombre+'</h2>'
-    +'<div style="font-size:12px;opacity:.75">'+r.codigo+' - '+r.correo+' - <span style="background:rgba(255,255,255,.2);padding:1px 8px;border-radius:10px">'+(r.periodo||'—')+'</span> - '+(r.fecha||'')+'</div></div>'
+    +'<h2 style="font-size:20px;margin-bottom:4px">'+esc(r.nombre)+'</h2>'
+    +'<div style="font-size:12px;opacity:.75">'+esc(r.codigo)+' - '+esc(r.correo)+' - <span style="background:rgba(255,255,255,.2);padding:1px 8px;border-radius:10px">'+esc(r.periodo||'—')+'</span> - '+esc(r.fecha||'')+'</div></div>'
     +'<div class="card" style="border-top:none;border-radius:0 0 var(--radius) var(--radius)">'
     +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px">'
     +'<div><div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Puntaje Total</div>'
@@ -981,7 +1029,7 @@ function showDetail(id){
     +'<h3 style="font-size:14px;color:var(--blue-d);margin:20px 0 12px;font-family:\'Source Sans 3\',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.6px">Retroalimentacion por seccion</h3>'
     +accItems
     +'<div style="display:flex;gap:10px;margin-top:22px;flex-wrap:wrap">'
-    +'<button class="btn btn-blue" style="flex:1" onclick="openEmail('+r.id+')">Generar correo de retroalimentacion</button>'
+    +'<button class="btn btn-blue" style="flex:1" onclick="openEmail(\''+r.id+'\')">Generar correo de retroalimentacion</button>'
     +'<button class="btn" style="background:var(--bg);color:var(--text);border:1.5px solid var(--border)" onclick="showScreen(\'sc-results\');renderResults()">Volver al panel</button>'
     +'</div></div>';
   showScreen('sc-detail');
@@ -994,8 +1042,8 @@ function toggleAcc(hdr){
 }
 
 function openEmail(id){
-  var data=getData();
-  var r=data.find(function(d){return d.id===id;});
+  var data=cachedData.length?cachedData:getData();
+  var r=data.find(function(d){return String(d.id)===String(id);});
   if(!r)return;
   var nombre1=(r.nombre.split(',')[1]||r.nombre).trim();
 
@@ -1094,10 +1142,16 @@ function fallbackCopy(el){
 function showCopyOk(){var c=document.getElementById('copy-ok');if(c)c.style.display='block';}
 
 function clearData(){
-  if(confirm('Eliminar todos los registros? Esta accion borrara datos en Firebase Y en este dispositivo. No se puede deshacer.')){
+  var data=getData();
+  if(!data.length){alert('No hay registros para eliminar.');return;}
+  if(!confirm('⚠️ ADVERTENCIA: Esta accion es irreversible.\n\nSe exportará el CSV automáticamente antes de eliminar.\n\n¿Continuar?'))return;
+  exportCSV();
+  setTimeout(function(){
+    if(!confirm('CSV descargado. ¿Confirma la eliminacion permanente de TODOS los registros en Firebase y este dispositivo?'))return;
     localStorage.removeItem(SK);
+    cachedData=[];
     fbClearAll(function(){ renderResults(); });
-  }
+  },800);
 }
 
 function exportCSV(){
